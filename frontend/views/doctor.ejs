@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Health Assistant</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #eef3f7;
+    margin: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    color: #1f6fb2;
+    margin-bottom: 5px;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+.symptom-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.symptom-grid button {
+    padding: 10px;
+    border: none;
+    background: #e8f1fb;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+textarea {
+    width: 100%;
+    height: 70px;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.primary-btn {
+    margin-top: 10px;
+    padding: 14px;
+    width: 100%;
+    background: #1f6fb2;
+    color: white;
+    border: none;
+    font-size: 17px;
+    border-radius: 8px;
+}
+
+.result-box {
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+.emergency {
+    background: #ffe9e9;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.emergency-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background: red;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.doctor-list {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.doctor-list div {
+    background: #f4f7fa;
+    padding: 12px;
+    border-radius: 10px;
+    width: 48%;
+    text-align: center;
+}
+.doctor-grid {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.doctor-card {
+    background: #f7fafc;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+.doctor-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid #1f6fb2;
+}
+
+.call-btn {
+    display: block;
+    background: #1f6fb2;
+    color: white;
+    padding: 6px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-top: 6px;
+}
+
+.whatsapp-btn {
+    display: block;
+    background: #25D366;
+    color: white;
+    padding: 6px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-top: 6px;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #1f6fb2;
+    color: white;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    font-size: 24px;
+}
+
+.brand {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+
+@media(max-width: 768px){
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .doctor-list {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+}
+body {
+    background: #eef3f7;
+    color: #222;
+}
+.dark-mode {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+.dark-mode .card {
+    background: #1e293b;
+    color: #e5e7eb;
+}
+
+.dark-mode .navbar {
+    background: #020617;
+}
+
+.dark-mode textarea {
+    background: #0f172a;
+    color: white;
+    border: 1px solid #334155;
+}
+
+.dark-mode .symptom-grid button {
+    background: #334155;
+    color: white;
+}
+
+.dark-mode .result-box {
+    background: #020617;
+}
+
+.dark-mode .doctor-card {
+    background: #1e293b;
+}
+.theme-toggle {
+    background: white;
+    border: none;
+    font-size: 18px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <header class="navbar">
+        <div class="nav-left">
+            <span class="logo"><h1>🏥 AI Chitikshalaya</h1></span>
+        </div>
+
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="#doctors">Doctors</a>
+            <a href="#emergency">Emergency</a>
+            <a href="#help">Help</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+    🌙
+</button>
+
+        </nav>
+    </header>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+
+        <!-- LEFT: SYMPTOMS -->
+        <div class="card">
+            <h2>Select your problem</h2>
+
+            <div class="symptom-grid">
+                <button onclick="addSymptom('fever')">🤒 Fever</button>
+                <button onclick="addSymptom('body pain')">💪 Body Pain</button>
+                <button onclick="addSymptom('vomiting')">🤮 Vomiting</button>
+                <button onclick="addSymptom('weakness')">😓 Weakness</button>
+                <button onclick="addSymptom('headache')">🤕 Headache</button>
+                <button onclick="addSymptom('cough')">😷 Cough</button>
+                <button onclick="addSymptom('stomach pain')">🤢 Stomach Pain</button>
+            </div>
+
+            <textarea id="question" placeholder="Selected symptoms will appear here..."></textarea>
+
+            <button class="primary-btn" onclick="askAI()">🔍 Get Health Advice</button>
+        </div>
+
+        <!-- RIGHT: RESULT -->
+        <div class="card">
+            <h2>🩺 Health Advice</h2>
+            <div id="result" class="result-box">Your advice will appear here.</div>
+        </div>
+
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="emergency card">
+        <h3>🚨 Emergency?</h3>
+        <p>If severe pain, breathing problem or unconscious:</p>
+        <a href="tel:108" class="emergency-btn">📞 Call Ambulance (108)</a>
+    </div>
+
+    <!-- DOCTORS -->
+    <div class="card">
+    <h3>👨‍⚕️ Available Doctors</h3>
+
+    <div class="doctor-grid">
+
+        <div class="doctor-card">
+            <img src="image.png" alt="Dr Sharma">
+            <h4>Dr. Sharma</h4>
+            <p>General Physician</p>
+            <a href="tel:9876543210" class="call-btn">📞 Call</a>
+            <a href="https://wa.me/919876543210" class="whatsapp-btn">💬 WhatsApp</a>
+        </div>
+
+        <div class="doctor-card">
+            <img src="image.png" alt="Dr Meena">
+            <h4>Dr. Meena</h4>
+            <p>Women Health Specialist</p>
+            <a href="tel:9876543211" class="call-btn">📞 Call</a>
+            <a href="https://wa.me/919876543211" class="whatsapp-btn">💬 WhatsApp</a>
+        </div>
+
+    </div>
+</div>
+
+
+</div>
+
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+    const btn = document.querySelector(".theme-toggle");
+
+    if(document.body.classList.contains("dark-mode")){
+        btn.innerHTML = "☀️";
+        localStorage.setItem("theme","dark");
+    } else {
+        btn.innerHTML = "🌙";
+        localStorage.setItem("theme","light");
+    }
+}
+
+function addSymptom(symptom){
+    const box = document.getElementById("question");
+    box.value += symptom + " ";
+}
+
+async function askAI() {
+    const question = document.getElementById("question").value;
+
+    document.getElementById("result").innerHTML = "⏳ Checking...";
+
+    const res = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("result").innerHTML =
+    data.response
+        .replace(/\n/g, "<br>")
+        .replace(/•/g, "👉");
+
+
+}
+function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+
+    if(document.body.classList.contains("dark-mode")){
+        localStorage.setItem("theme","dark");
+    } else {
+        localStorage.setItem("theme","light");
+    }
+}
+
+// remember user preference
+window.onload = () => {
+    if(localStorage.getItem("theme") === "dark"){
+        document.body.classList.add("dark-mode");
+    }
+};
+</script>
+</body>
+</html>

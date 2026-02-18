@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome | AI Chitikshalaya</title>
+
+<style>
+
+/* ===== GENERAL ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef3f7;
+    color: #222;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: sticky;
+    top: 0;
+    background: #1f6fb2;
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.brand {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.theme-toggle {
+    margin-left: 20px;
+    background: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ===== HERO ===== */
+.hero-img {
+    width: 220px;
+    margin: 15px 0;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+/* ===== INTRO ===== */
+.intro-container {
+    max-width: 650px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.subtitle {
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.intro-card {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    margin-top: 15px;
+    text-align: left;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    animation: fadeInUp 0.7s ease;
+}
+
+@keyframes fadeInUp {
+    from {opacity:0; transform: translateY(20px);}
+    to {opacity:1; transform: translateY(0);}
+}
+
+/* ===== EMERGENCY ===== */
+.emergency-box {
+    background: #ffeaea;
+    border-left: 6px solid red;
+}
+
+/* ===== BUTTON ===== */
+.start-btn {
+    margin-top: 22px;
+    padding: 15px 24px;
+    font-size: 18px;
+    background: #1f6fb2;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.start-btn:hover {
+    background: #165a91;
+}
+
+/* ===== DARK MODE ===== */
+.dark-mode {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+.dark-mode .intro-card {
+    background: #1e293b;
+    color: #e5e7eb;
+}
+
+.dark-mode .navbar {
+    background: #020617;
+}
+
+.dark-mode .subtitle {
+    color: #cbd5e1;
+}
+
+.dark-mode .emergency-box {
+    background: #3b0d0d;
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="brand">🏥 AI Chitikshalaya</div>
+
+    <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="#emergency">Emergency</a>
+        <a href="#help">Help</a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </nav>
+</header>
+
+<div class="intro-container">
+
+    <img src="/images/health-care.png" class="hero-img">
+
+    <h1>Welcome to AI Chitikshalaya</h1>
+    <p class="subtitle">Affordable healthcare for every village</p>
+
+    <div class="intro-card">
+        <h2>👋 Welcome</h2>
+        <p>
+            This smart health assistant helps you understand your symptoms
+            and get simple care advice instantly.
+        </p>
+    </div>
+
+    <div class="intro-card">
+        <h2>💡 What You Can Do</h2>
+        <ul>
+            <li>✔ Check health symptoms</li>
+            <li>✔ Get simple care advice</li>
+            <li>✔ Contact nearby doctors</li>
+            <li>✔ Emergency help access</li>
+        </ul>
+    </div>
+
+    <div class="intro-card">
+        <h2>📋 How It Works</h2>
+        <ol>
+            <li>Select your symptoms</li>
+            <li>Get instant health advice</li>
+            <li>Contact doctor if needed</li>
+        </ol>
+    </div>
+
+    <div id="emergency" class="intro-card emergency-box">
+        <h2>🚨 Emergency</h2>
+        <p>If severe pain or breathing problem:</p>
+        <a href="tel:108">📞 Call Ambulance (108)</a>
+    </div>
+
+    <a href="/home">
+        <button class="start-btn">Start Health Check →</button>
+    </a>
+
+</div>
+
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+
+    const btn = document.querySelector(".theme-toggle");
+
+    if(document.body.classList.contains("dark-mode")){
+        btn.innerHTML = "☀️";
+        localStorage.setItem("theme","dark");
+    } else {
+        btn.innerHTML = "🌙";
+        localStorage.setItem("theme","light");
+    }
+}
+
+window.onload = () => {
+    if(localStorage.getItem("theme") === "dark"){
+        document.body.classList.add("dark-mode");
+        document.querySelector(".theme-toggle").innerHTML="☀️";
+    }
+};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+/* --- Root Variables for easy customization --- */
+:root {
+  --primary-color: #2a52be;    /* Medical Blue */
+  --secondary-color: #48cae4;  /* Light Blue */
+  --emergency-color: #d90429;  /* Warning Red */
+  --success-color: #2b9348;    /* Available Green */
+  --bg-color: #f0f2f5;
+  --text-dark: #2b2d42;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* --- Header --- */
+header {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  box-shadow: var(--shadow);
+}
+
+/* --- Layout Container --- */
+.container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr; /* AI Chat on left, Doctors on right */
+  gap: 2rem;
+  padding: 0 20px;
+}
+
+/* Responsive: Stack columns on smaller screens */
+@media (max-width: 850px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Card Styling --- */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: var(--shadow);
+  height: fit-content;
+}
+
+.card h3 {
+  margin-top: 0;
+  color: var(--primary-color);
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --- AI Chat Input & Button --- */
+#question {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+#question:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+button {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #1e3a8a;
+}
+
+/* --- AI Result Box --- */
+.result {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8fbff;
+  border-left: 5px solid var(--primary-color);
+  border-radius: 8px;
+  min-height: 50px;
+  white-space: pre-wrap; /* Keeps the AI's formatting/newlines */
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* --- Doctor List Styling --- */
+.doctor {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.doctor:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.doctor strong {
+  font-size: 1.1rem;
+  display: block;
+}
+
+.doctor p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Emergency Highlight for Dr. Priya */
+.emergency {
+  border: 2px solid var(--emergency-color);
+  background-color: #fff5f5;
+}
+
+.emergency strong {
+  color: var(--emergency-color);
+}
+
+/* Tags (Available Now, Online) */
+.tag {
+  display: inline-block;
+  background-color: var(--success-color);
+  color: white;
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+/* Doctor Action Buttons */
+.btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-right: 8px;
+  transition: opacity 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+/* Specific colors for Call and WhatsApp */
+.btn[href^="tel"] {
+  background-color: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn[href*="wa.me"] {
+  background-color: #25d366;
+  color: white;
+}
