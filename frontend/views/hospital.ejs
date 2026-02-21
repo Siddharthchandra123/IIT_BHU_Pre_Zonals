@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nearby Hospitals</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background: #eef3f7;
+    margin: 0;
+}
+
+.navbar {
+    background: #1f6fb2;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.back-btn {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.location-btn {
+    background: #1f6fb2;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.hospital-list {
+    margin-top: 20px;
+}
+
+.hospital-card {
+    background: white;
+    padding: 15px;
+    margin-top: 12px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    text-align: left;
+}
+
+.hospital-card h3 {
+    margin: 0;
+}
+
+.actions {
+    margin-top: 10px;
+}
+
+.actions a {
+    text-decoration: none;
+    margin-right: 10px;
+    color: #1f6fb2;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <h2>🏥 Nearby Hospitals</h2>
+    <a href="/" class="back-btn">← Back</a>
+</header>
+
+<div class="container">
+
+    <button class="location-btn" onclick="getLocation()">
+        📍 Find Hospitals Near Me
+    </button>
+
+    <div id="status"></div>
+
+    <div id="hospitalList" class="hospital-list"></div>
+
+</div>
+
+<script>function getLocation() {
+    const status = document.getElementById("status");
+    status.innerHTML = "📍 Getting location...";
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(fetchHospitals, showError);
+    } else {
+        status.innerHTML = "Location not supported.";
+    }
+}
+
+function fetchHospitals(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    document.getElementById("status").innerHTML =
+        "Searching nearby hospitals...";
+
+    fetch(`/api/hospitals?lat=${lat}&lon=${lon}`)
+        .then(res => res.json())
+        .then(data => displayHospitals(data));
+}
+
+function displayHospitals(hospitals) {
+    const list = document.getElementById("hospitalList");
+    list.innerHTML = "";
+
+    if (hospitals.length === 0) {
+        list.innerHTML = "No hospitals found nearby.";
+        return;
+    }
+
+    hospitals.forEach(h => {
+        list.innerHTML += `
+            <div class="hospital-card">
+                
+                <div class="hospital-header">
+                    <img src="/images/hospital.png" class="hospital-icon">
+                    <div>
+                        <h3>${h.name}</h3>
+                        <p class="address">${h.address}</p>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="tel:${h.phone || ''}" class="call-btn">📞 Call</a>
+                    <a href="https://maps.google.com/?q=${h.lat},${h.lon}" target="_blank" class="dir-btn">
+                        🗺 Directions
+                    </a>
+                </div>
+
+            </div>
+        `;
+    });
+}
+function showError() {
+    document.getElementById("status").innerHTML =
+        "Unable to access location.";
+}</script>
+</body>
+</html>

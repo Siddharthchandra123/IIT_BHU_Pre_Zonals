@@ -28,7 +28,13 @@ app.post('/ask', async (req, res) => {
         res.status(500).json({ response: "Error: Could not connect to the Python AI service." });
     }
 });
+const hospitalRoutes = require('./routes/hospital');
 
+app.use('/api', hospitalRoutes);
+
+app.get('/hospitals', (req, res) => {
+    res.render('hospital');
+});
 app.listen(3000, () => {
     console.log('Frontend server live at http://localhost:3000');
 });
