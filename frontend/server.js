@@ -13,13 +13,19 @@ app.get('/home', (req, res) => {
     res.render('doctor');  // main app
 });
 
+app.get('/ambulance', (req, res) => {
+    res.render('ambulance');
+});
+
 app.post('/ask', async (req, res) => {
     try {
         const userQuestion = req.body.question;
-        
+        const userLang = req.body.lang || "en";
+
         // Native Windows to Windows communication
         const response = await axios.post('http://127.0.0.1:5000/predict', {
-            query: userQuestion
+            query: userQuestion,
+            lang: userLang
         });
 
         res.json({ response: response.data.reply });

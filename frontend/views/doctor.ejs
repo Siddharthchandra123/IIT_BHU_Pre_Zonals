@@ -53,10 +53,10 @@
         .result-box::before {
             content: "AI Analysis";
             position: absolute;
-            top: -12px;
+            top: -2px;
             left: 20px;
             background: var(--bg-dark);
-            padding: 0 10px;
+            padding: 0 5px;
             font-size: 0.8rem;
             color: var(--primary-glow);
             font-weight: 600;
@@ -203,6 +203,7 @@
         <nav class="nav-links">
             <a href="/">Home</a>
             <a href="/home" style="color: #fff;">Diagnostics</a>
+            <a href="/ambulance">Ambulance</a>
             <a href="/hospitals">Find Hospitals</a>
             <a href="#emergency" style="color: #fca5a5;">Emergency</a>
         </nav>
@@ -233,6 +234,20 @@
                 </div>
 
                 <div style="position: relative; margin-bottom: 20px;">
+                    <select id="language" class="glass-input"
+                        style="width: 100%; margin-bottom: 15px; padding: 12px; background: rgba(15, 23, 42, 0.6); color: white; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 12px; font-size: 1rem; outline: none;">
+                        <option value="en">🇺🇸 English</option>
+                        <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+                        <option value="bn">🇮🇳 Bengali (বাংলা)</option>
+                        <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+                        <option value="mr">🇮🇳 Marathi (मराठी)</option>
+                        <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+                        <option value="gu">🇮🇳 Gujarati (ગુજરાતી)</option>
+                        <option value="kn">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+                        <option value="ml">🇮🇳 Malayalam (മലയാളം)</option>
+                        <option value="pa">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
+                    </select>
+
                     <textarea id="question" class="glass-input" rows="4"
                         placeholder="Describe your symptoms thoroughly..."></textarea>
 
@@ -348,6 +363,7 @@
         // Original API Call Logic matching backend expectations
         async function askAI() {
             const question = document.getElementById("question").value;
+            const language = document.getElementById("language").value;
             const resultBox = document.getElementById("result");
             const loader = document.getElementById("loader");
 
@@ -363,7 +379,7 @@
                 const res = await fetch("/ask", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ question })
+                    body: JSON.stringify({ question, lang: language })
                 });
 
                 const data = await res.json();
