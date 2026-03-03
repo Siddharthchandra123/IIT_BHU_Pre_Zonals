@@ -9,7 +9,7 @@ from transformers import pipeline
 # =========================
 # PATH CONFIG
 # =========================
-DATA_PATH = r"C:\Users\Lenovo\Downloads\IIT BHU\dataset"
+DATA_PATH = "../dataset"
 
 # =========================
 # LOAD DATA
@@ -21,7 +21,7 @@ prec_df = pd.read_csv(f"{DATA_PATH}/Disease symptom prediction/symptom_precautio
 train_df = pd.read_csv(f"{DATA_PATH}/disease_prediction/Training.csv")
 test_df = pd.read_csv(f"{DATA_PATH}/disease_prediction/Testing.csv")
 
-qa_df = pd.read_csv(r"C:\Users\Lenovo\Downloads\Medical\frontend\medquad_qa.csv")
+qa_df = pd.read_csv("medquad_qa.csv")
 questions = qa_df["Question"].tolist()
 answers = qa_df["Answer"].tolist()
 

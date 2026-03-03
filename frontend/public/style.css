@@ -1,187 +1,325 @@
-/* --- Root Variables for easy customization --- */
+/* --- Root Variables for Premium Medical God-Level Design --- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
 :root {
-  --primary-color: #2a52be;    /* Medical Blue */
-  --secondary-color: #48cae4;  /* Light Blue */
-  --emergency-color: #d90429;  /* Warning Red */
-  --success-color: #2b9348;    /* Available Green */
-  --bg-color: #f0f2f5;
-  --text-dark: #2b2d42;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* Core Colors */
+  --bg-dark: #0B1120;
+  --bg-card: rgba(15, 23, 42, 0.6);
+  --bg-card-hover: rgba(30, 41, 59, 0.8);
+  
+  /* Accents */
+  --primary-glow: #0ea5e9; /* Bright Cyan/Blue */
+  --secondary-glow: #8b5cf6; /* Vibrant Purple */
+  --accent-teal: #14b8a6;
+  
+  /* Status Colors */
+  --error: #ef4444;
+  --success: #10b981;
+  
+  /* Text */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  /* Glassmorphism */
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  
+  /* Transitions */
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-dark);
-  margin: 0;
-  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
   line-height: 1.6;
 }
 
-/* --- Header --- */
-header {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  padding: 1.5rem;
-  text-align: center;
-  font-size: 1.8rem;
-  font-weight: bold;
-  box-shadow: var(--shadow);
+/* Background Ambient Glow */
+body::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(14, 165, 233, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
 }
 
-/* --- Layout Container --- */
-.container {
-  max-width: 1100px;
-  margin: 2rem auto;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr; /* AI Chat on left, Doctors on right */
-  gap: 2rem;
-  padding: 0 20px;
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
 }
 
-/* Responsive: Stack columns on smaller screens */
-@media (max-width: 850px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-/* --- Card Styling --- */
-.card {
-  background: white;
-  border-radius: 16px;
-  padding: 25px;
-  box-shadow: var(--shadow);
-  height: fit-content;
+.heading-gradient {
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
 }
 
-.card h3 {
-  margin-top: 0;
-  color: var(--primary-color);
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 10px;
+/* Glassmorphism Card Utility */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  transition: var(--transition-smooth);
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Glow Button Utility */
+.btn-glow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  border: none;
+  border-radius: 99px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+  text-decoration: none;
+  z-index: 1;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #6366f1, #0ea5e9);
+  z-index: -1;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+}
+
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+}
+
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+/* Navigation System */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(11, 17, 32, 0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  transition: var(--transition-smooth);
+}
+
+.navbar.scrolled {
+  padding: 15px 5%;
+  background: rgba(11, 17, 32, 0.9);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.navbar .brand {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-/* --- AI Chat Input & Button --- */
-#question {
-  width: 100%;
-  padding: 14px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 1rem;
-  margin-bottom: 15px;
-  transition: border-color 0.3s;
-  box-sizing: border-box;
-}
-
-#question:focus {
-  outline: none;
-  border-color: var(--primary-color);
-}
-
-button {
-  width: 100%;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background-color: #1e3a8a;
-}
-
-/* --- AI Result Box --- */
-.result {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f8fbff;
-  border-left: 5px solid var(--primary-color);
-  border-radius: 8px;
-  min-height: 50px;
-  white-space: pre-wrap; /* Keeps the AI's formatting/newlines */
-  font-size: 0.95rem;
-  color: #333;
-}
-
-/* --- Doctor List Styling --- */
-.doctor {
-  padding: 15px;
-  margin-bottom: 15px;
-  border: 1px solid #edf2f7;
-  border-radius: 12px;
-  transition: transform 0.2s;
-}
-
-.doctor:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.doctor strong {
-  font-size: 1.1rem;
-  display: block;
-}
-
-.doctor p {
-  margin: 5px 0;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-/* Emergency Highlight for Dr. Priya */
-.emergency {
-  border: 2px solid var(--emergency-color);
-  background-color: #fff5f5;
-}
-
-.emergency strong {
-  color: var(--emergency-color);
-}
-
-/* Tags (Available Now, Online) */
-.tag {
-  display: inline-block;
-  background-color: var(--success-color);
-  color: white;
-  font-size: 0.75rem;
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 10px;
-}
-
-/* Doctor Action Buttons */
-.btn {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 16px;
   text-decoration: none;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-right: 8px;
-  transition: opacity 0.2s;
 }
 
-.btn:hover {
-  opacity: 0.8;
+.navbar .brand span {
+  font-size: 1.8rem;
 }
 
-/* Specific colors for Call and WhatsApp */
-.btn[href^="tel"] {
-  background-color: #e2e8f0;
-  color: #2d3748;
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
 }
 
-.btn[href*="wa.me"] {
-  background-color: #25d366;
-  color: white;
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-glow);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Input Fields */
+.glass-input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  transition: var(--transition-smooth);
+  resize: vertical;
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: var(--primary-glow);
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.glass-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Specific Section Layouts */
+.main-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 120px 5% 60px; /* Account for fixed navbar */
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Badges / Pills */
+.badge-pill {
+  padding: 8px 16px;
+  border-radius: 99px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.badge-pill:hover {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: var(--primary-glow);
+  color: #fff;
 }

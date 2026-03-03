@@ -1,400 +1,390 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>AI Health Assistant</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background: #eef3f7;
-    margin: 0;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostics | AI Health Assistant</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .diagnostics-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
 
-.container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 20px;
-}
+        @media (max-width: 900px) {
+            .diagnostics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-}
+        .symptom-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
 
-.header h1 {
-    color: #1f6fb2;
-    margin-bottom: 5px;
-}
+        /* The glass card specifically for AI chat */
+        .chat-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
 
-.main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
+        /* The Result Box - Chat Bubble Style */
+        .result-box {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 25px;
+            flex-grow: 1;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #f1f5f9;
+            overflow-y: auto;
+            position: relative;
+        }
 
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-}
+        .result-box::before {
+            content: "AI Analysis";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-dark);
+            padding: 0 10px;
+            font-size: 0.8rem;
+            color: var(--primary-glow);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-.symptom-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 10px;
-}
+        /* Custom scrollbar for result box */
+        .result-box::-webkit-scrollbar {
+            width: 6px;
+        }
 
-.symptom-grid button {
-    padding: 10px;
-    border: none;
-    background: #e8f1fb;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-}
+        .result-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-textarea {
-    width: 100%;
-    height: 70px;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 16px;
-}
+        .result-box::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+        }
 
-.primary-btn {
-    margin-top: 10px;
-    padding: 14px;
-    width: 100%;
-    background: #1f6fb2;
-    color: white;
-    border: none;
-    font-size: 17px;
-    border-radius: 8px;
-}
+        .loader {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(14, 165, 233, 0.3);
+            border-radius: 50%;
+            border-top-color: #0ea5e9;
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
 
-.result-box {
-    margin-top: 10px;
-    line-height: 1.6;
-}
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
-.emergency {
-    background: #ffe9e9;
-    text-align: center;
-    margin-top: 20px;
-}
+        /* Doctors Section */
+        .doctors-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-.emergency-btn {
-    display: inline-block;
-    padding: 10px 16px;
-    background: red;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-top: 8px;
-}
+        .doctor-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            transition: var(--transition-smooth);
+        }
 
-.doctor-list {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
+        .doctor-profile:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateX(10px);
+        }
 
-.doctor-list div {
-    background: #f4f7fa;
-    padding: 12px;
-    border-radius: 10px;
-    width: 48%;
-    text-align: center;
-}
-.doctor-grid {
-    display: flex;
-    gap: 20px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-}
+        .doc-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
 
-.doctor-card {
-    background: #f7fafc;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    width: 200px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-}
+        .doc-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #fff;
+        }
 
-.doctor-card img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-    border: 3px solid #1f6fb2;
-}
+        .doc-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
 
-.call-btn {
-    display: block;
-    background: #1f6fb2;
-    color: white;
-    padding: 6px;
-    border-radius: 6px;
-    text-decoration: none;
-    margin-top: 6px;
-}
+        .doc-actions {
+            display: flex;
+            gap: 10px;
+        }
 
-.whatsapp-btn {
-    display: block;
-    background: #25D366;
-    color: white;
-    padding: 6px;
-    border-radius: 6px;
-    text-decoration: none;
-    margin-top: 6px;
-}
+        .doc-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-.navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: #1f6fb2;
-    color: white;
-    padding: 12px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+        .btn-call {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.nav-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        .btn-call:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
 
-.logo {
-    font-size: 24px;
-}
+        .btn-whatsapp {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
 
-.brand {
-    font-size: 20px;
-    font-weight: bold;
-}
+        .btn-whatsapp:hover {
+            background: rgba(34, 197, 94, 0.25);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+        }
 
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
-    font-weight: 500;
-}
-
-.nav-links a:hover {
-    text-decoration: underline;
-}
-
-
-@media(max-width: 768px){
-    .main-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .doctor-list {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .nav-links {
-        display: none;
-    }
-}
-body {
-    background: #eef3f7;
-    color: #222;
-}
-.dark-mode {
-    background: #0f172a;
-    color: #e5e7eb;
-}
-
-.dark-mode .card {
-    background: #1e293b;
-    color: #e5e7eb;
-}
-
-.dark-mode .navbar {
-    background: #020617;
-}
-
-.dark-mode textarea {
-    background: #0f172a;
-    color: white;
-    border: 1px solid #334155;
-}
-
-.dark-mode .symptom-grid button {
-    background: #334155;
-    color: white;
-}
-
-.dark-mode .result-box {
-    background: #020617;
-}
-
-.dark-mode .doctor-card {
-    background: #1e293b;
-}
-.theme-toggle {
-    background: white;
-    border: none;
-    font-size: 18px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-</style>
+        /* Section Title override */
+        .section-header {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="container">
-    <header class="navbar">
-        <div class="nav-left">
-            <span class="logo"><h1>🏥 AI Chitikshalaya</h1></span>
-        </div>
-
+    <header class="navbar" id="navbar">
+        <a href="/" class="brand">
+            <span>⚕️</span> AI Chitikshalaya
+        </a>
         <nav class="nav-links">
             <a href="/">Home</a>
-            <a href="#doctors">Doctors</a>
-            <a href="#emergency">Emergency</a>
-            <a href="#help">Help</a>
-            <a href="/hospitals">Hospitals</a>
-            <button class="theme-toggle" onclick="toggleTheme()">
-    🌙
-</button>
-
+            <a href="/home" style="color: #fff;">Diagnostics</a>
+            <a href="/hospitals">Find Hospitals</a>
+            <a href="#emergency" style="color: #fca5a5;">Emergency</a>
         </nav>
     </header>
 
-    <!-- MAIN GRID -->
-    <div class="main-grid">
+    <main class="main-wrapper">
 
-        <!-- LEFT: SYMPTOMS -->
-        <div class="card">
-            <h2>Select your problem</h2>
+        <div class="diagnostics-grid">
 
-            <div class="symptom-grid">
-                <button onclick="addSymptom('fever')">🤒 Fever</button>
-                <button onclick="addSymptom('body pain')">💪 Body Pain</button>
-                <button onclick="addSymptom('vomiting')">🤮 Vomiting</button>
-                <button onclick="addSymptom('weakness')">😓 Weakness</button>
-                <button onclick="addSymptom('headache')">🤕 Headache</button>
-                <button onclick="addSymptom('cough')">😷 Cough</button>
-                <button onclick="addSymptom('stomach pain')">🤢 Stomach Pain</button>
+            <!-- Left Side: AI Interaction -->
+            <div class="glass-panel chat-card animate-fade-up">
+                <h2 class="section-header">
+                    <span style="font-size: 2rem;">🧠</span> Symptom Analysis
+                </h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    Select common symptoms or describe how you feel in detail.
+                </p>
+
+                <div class="symptom-selector">
+                    <button class="badge-pill" type="button" onclick="addSymptom('fever')">🤒 Fever</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('body pain')">💪 Body Pain</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('vomiting')">🤮 Vomiting</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('weakness')">😓 Weakness</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('headache')">🤕 Headache</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('cough')">😷 Cough</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('stomach pain')">🤢 Stomach
+                        ache</button>
+                </div>
+
+                <div style="position: relative; margin-bottom: 20px;">
+                    <textarea id="question" class="glass-input" rows="4"
+                        placeholder="Describe your symptoms thoroughly..."></textarea>
+
+                    <button class="btn-glow" style="width: 100%; margin-top: 15px;" onclick="askAI()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="margin-right: 8px;">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                        Analyze Symptoms
+                    </button>
+                </div>
+
+                <!-- Loader -->
+                <div id="loader" class="loader"></div>
+
+                <!-- Results container -->
+                <div id="result" class="result-box">
+                    <div style="text-align: center; color: var(--text-muted); opacity: 0.6; margin-top: 20%;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">🩺</div>
+                        Awaiting input. Your health analysis will appear here.
+                    </div>
+                </div>
             </div>
 
-            <textarea id="question" placeholder="Selected symptoms will appear here..."></textarea>
+            <!-- Right Side: Doctors & Emergency -->
+            <div class="animate-fade-up" style="animation-delay: 0.2s;">
 
-            <button class="primary-btn" onclick="askAI()">🔍 Get Health Advice</button>
+                <!-- Emergency Mini Card -->
+                <div class="glass-panel" id="emergency"
+                    style="margin-bottom: 30px; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.05);">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <span style="font-size: 2.5rem;">🚨</span>
+                        <div>
+                            <h3 style="color: #fca5a5; margin-bottom: 8px;">Emergency Hotline</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px;">If you are
+                                experiencing severe pain, bleeding, or breathing issues, immediately contact emergency
+                                services.</p>
+                            <a href="tel:108" class="btn-glow"
+                                style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 10px 20px; font-size: 0.95rem;">
+                                Call Ambulance (108)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel">
+                    <h2 class="section-header">
+                        <span style="font-size: 2rem;">👨‍⚕️</span> Specialists on Call
+                    </h2>
+
+                    <div class="doctors-wrapper">
+                        <!-- Dr 1 -->
+                        <div class="doctor-profile">
+                            <div class="doc-avatar">👨‍⚕️</div>
+                            <div class="doc-info">
+                                <h3>Dr. Sharma</h3>
+                                <p>General Physician • 15 Yrs Exp</p>
+                                <div class="doc-actions">
+                                    <a href="tel:9876543210" class="doc-btn btn-call">📞 Call</a>
+                                    <a href="https://wa.me/919876543210" class="doc-btn btn-whatsapp">💬 WhatsApp</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dr 2 -->
+                        <div class="doctor-profile">
+                            <div class="doc-avatar" style="background: linear-gradient(135deg, #f43f5e, #db2777);">👩‍⚕️
+                            </div>
+                            <div class="doc-info">
+                                <h3>Dr. Meena</h3>
+                                <p>Women's Health • 12 Yrs Exp</p>
+                                <div class="doc-actions">
+                                    <a href="tel:9876543211" class="doc-btn btn-call">📞 Call</a>
+                                    <a href="https://wa.me/919876543211" class="doc-btn btn-whatsapp">💬 WhatsApp</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
+    </main>
 
-        <!-- RIGHT: RESULT -->
-        <div class="card">
-            <h2>🩺 Health Advice</h2>
-            <div id="result" class="result-box">Your advice will appear here.</div>
-        </div>
+    <script>
+        // Navbar Scrolled Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
 
-    </div>
+        // Add Symptom to textarea
+        function addSymptom(symptom) {
+            const box = document.getElementById("question");
+            // Highlight the pill briefly
+            const btn = event.target;
+            const originalBg = btn.style.background;
+            btn.style.background = 'rgba(14, 165, 233, 0.4)';
+            setTimeout(() => { btn.style.background = originalBg; }, 200);
 
-    <!-- EMERGENCY -->
-    <div class="emergency card">
-        <h3>🚨 Emergency?</h3>
-        <p>If severe pain, breathing problem or unconscious:</p>
-        <a href="tel:108" class="emergency-btn">📞 Call Ambulance (108)</a>
-    </div>
+            if (box.value.length > 0 && !box.value.endsWith(' ')) {
+                box.value += ", ";
+            }
+            box.value += symptom;
+            box.focus();
+        }
 
-    <!-- DOCTORS -->
-    <div class="card">
-    <h3>👨‍⚕️ Available Doctors</h3>
+        // Original API Call Logic matching backend expectations
+        async function askAI() {
+            const question = document.getElementById("question").value;
+            const resultBox = document.getElementById("result");
+            const loader = document.getElementById("loader");
 
-    <div class="doctor-grid">
+            if (!question.trim()) {
+                resultBox.innerHTML = '<span style="color: #fca5a5;">⚠️ Please specify your symptoms before analyzing.</span>';
+                return;
+            }
 
-        <div class="doctor-card">
-            <img src="image.png" alt="Dr Sharma">
-            <h4>Dr. Sharma</h4>
-            <p>General Physician</p>
-            <a href="tel:9876543210" class="call-btn">📞 Call</a>
-            <a href="https://wa.me/919876543210" class="whatsapp-btn">💬 WhatsApp</a>
-        </div>
+            resultBox.innerHTML = "";
+            loader.style.display = "block";
 
-        <div class="doctor-card">
-            <img src="image.png" alt="Dr Meena">
-            <h4>Dr. Meena</h4>
-            <p>Women Health Specialist</p>
-            <a href="tel:9876543211" class="call-btn">📞 Call</a>
-            <a href="https://wa.me/919876543211" class="whatsapp-btn">💬 WhatsApp</a>
-        </div>
+            try {
+                const res = await fetch("/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question })
+                });
 
-    </div>
-</div>
+                const data = await res.json();
 
+                loader.style.display = "none";
 
-</div>
+                // Format response heavily to look good on glass UI
+                let formattedResponse = data.response
+                    .replace(/\n\n/g, "<br><br>")
+                    .replace(/\n/g, "<br>")
+                    .replace(/•/g, "<span style='color: #0ea5e9; margin-right: 8px;'>★</span>")
+                    .replace(/\*\*([^*]+)\*\*/g, "<strong style='color: #38bdf8;'>$1</strong>"); // Bold handling
 
-<script>
-function toggleTheme() {
-    document.body.classList.toggle("dark-mode");
-    const btn = document.querySelector(".theme-toggle");
-
-    if(document.body.classList.contains("dark-mode")){
-        btn.innerHTML = "☀️";
-        localStorage.setItem("theme","dark");
-    } else {
-        btn.innerHTML = "🌙";
-        localStorage.setItem("theme","light");
-    }
-}
-
-function addSymptom(symptom){
-    const box = document.getElementById("question");
-    box.value += symptom + " ";
-}
-
-async function askAI() {
-    const question = document.getElementById("question").value;
-
-    document.getElementById("result").innerHTML = "⏳ Checking...";
-
-    const res = await fetch("/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question })
-    });
-
-    const data = await res.json();
-
-    document.getElementById("result").innerHTML =
-    data.response
-        .replace(/\n/g, "<br>")
-        .replace(/•/g, "👉");
-
-
-}
-function toggleTheme() {
-    document.body.classList.toggle("dark-mode");
-
-    if(document.body.classList.contains("dark-mode")){
-        localStorage.setItem("theme","dark");
-    } else {
-        localStorage.setItem("theme","light");
-    }
-}
-
-// remember user preference
-window.onload = () => {
-    if(localStorage.getItem("theme") === "dark"){
-        document.body.classList.add("dark-mode");
-    }
-};
-</script>
+                resultBox.innerHTML = `<div style="animation: fadeInUp 0.4s ease;">${formattedResponse}</div>`;
+            } catch (err) {
+                loader.style.display = "none";
+                resultBox.innerHTML = '<span style="color: #fca5a5;">❌ Failed to connect to AI Core. Please ensure the backend is running.</span>';
+                console.error(err);
+            }
+        }
+    </script>
 </body>
+
 </html>
