@@ -1,1 +1,13 @@
-frontend/node_modules
+node_modules/
+__pycache__/
+.expo/
+*.pyc
+.env
+.DS_Store
+mobile_app/android/
+mobile_app/ios/
+dist/
+build/
+package-lock.json
+*.zip
+*.rar

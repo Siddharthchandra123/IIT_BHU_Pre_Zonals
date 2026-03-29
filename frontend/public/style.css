@@ -323,3 +323,31 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--primary-glow);
   color: #fff;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px 5%;
+    gap: 12px;
+  }
+  
+  .navbar.scrolled {
+    padding: 10px 5%;
+  }
+
+  .nav-links {
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .nav-links a {
+    font-size: 0.85rem;
+  }
+  
+  .main-wrapper {
+    padding-top: 140px; /* Account for taller stacked navbar */
+  }
+}

@@ -6,14 +6,9 @@ from sentence_transformers import SentenceTransformer
 from sklearn.ensemble import RandomForestClassifier
 from transformers import pipeline
 
-# =========================
-# PATH CONFIG
-# =========================
+
 DATA_PATH = "../dataset"
 
-# =========================
-# LOAD DATA
-# =========================
 symptoms_df = pd.read_csv(f"{DATA_PATH}/Disease symptom prediction/dataset.csv")
 desc_df = pd.read_csv(f"{DATA_PATH}/Disease symptom prediction/symptom_Description.csv")
 prec_df = pd.read_csv(f"{DATA_PATH}/Disease symptom prediction/symptom_precaution.csv")
@@ -25,9 +20,6 @@ qa_df = pd.read_csv("medquad_qa.csv")
 questions = qa_df["Question"].tolist()
 answers = qa_df["Answer"].tolist()
 
-# =========================
-# TRAIN ML MODEL
-# =========================
 X = train_df.drop("prognosis", axis=1)
 y = train_df["prognosis"]
 
@@ -38,10 +30,6 @@ X_test = test_df.drop("prognosis", axis=1).reindex(columns=X.columns, fill_value
 y_test = test_df["prognosis"]
 
 print(f"✅ ML Accuracy: {model_ml.score(X_test, y_test):.2%}")
-
-# =========================
-# LOAD EMBEDDING MODEL (RAG)
-# =========================
 print("Loading embedding model...")
 embed_model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -50,9 +38,6 @@ embeddings = np.array(embed_model.encode(questions, show_progress_bar=True))
 index = faiss.IndexFlatL2(embeddings.shape[1])
 index.add(embeddings)
 
-# =========================
-# LOAD SUMMARIZER
-# =========================
 try:
     summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
     print("✅ Summarizer ready")
@@ -60,9 +45,6 @@ except:
     summarizer = None
     print("⚠️ Summarizer disabled")
 
-# =========================
-# HELPERS
-# =========================
 def normalize_input(text):
     text = text.lower()
     fixes = {
@@ -94,25 +76,47 @@ def get_disease_info(disease):
 
 def predict_rule(symptoms):
     best, score = None, 0
+    stop_words = {"hi", "hello", "how", "are", "you", "whats", "up", "buddy", "i", "am", "my", "is", "the", "a", "an"}
+    
+    filtered_symptoms = [s for s in symptoms if s not in stop_words and len(s) > 2]
+    
+    if not filtered_symptoms:
+        return None
+
     for _, row in symptoms_df.iterrows():
         text = " ".join(row.dropna().astype(str)).lower()
-        matches = sum(s in text for s in symptoms)
+        matches = sum(1 for s in filtered_symptoms if f" {s} " in f" {text} " or s == text or text.startswith(f"{s} ") or text.endswith(f" {s}"))
+        
         if matches > score:
             score = matches
             best = row["Disease"]
-    return best
+            
+    if score > 0:
+        return best
+    return None
 
 def predict_ml(symptoms):
     input_df = pd.DataFrame(
         [[1 if col in symptoms else 0 for col in X.columns]],
         columns=X.columns
     )
+    probs = model_ml.predict_proba(input_df)[0]
+    confidence = max(probs)
+    
+    if confidence < 0.65:
+        return None
     return model_ml.predict(input_df)[0]
 
 def rag_answer(query):
     vec = embed_model.encode([query])
     D, I = index.search(vec, k=2)
-    text = " ".join(answers[i] for i in I[0])
+    
+    valid_answers = [answers[I[0][i]] for i in range(len(I[0])) if D[0][i] < 1.2]
+    
+    if not valid_answers:
+        return "I don't have enough specific medical information to answer that safely. Please consult a doctor."
+        
+    text = " ".join(valid_answers)
     return simplify(text)
 
 def emergency_check(text):
@@ -121,9 +125,6 @@ def emergency_check(text):
         return "\n🚨 EMERGENCY: Seek medical help immediately."
     return ""
 
-# =========================
-# MAIN AI FUNCTION
-# =========================
 def ask(user_input):
 
     user_input = normalize_input(user_input)
@@ -135,7 +136,6 @@ def ask(user_input):
 
     response = ""
 
-    # CONDITION
     if disease_rule:
         desc, precautions = get_disease_info(disease_rule)
 
@@ -149,28 +149,21 @@ def ask(user_input):
             for p in precautions[:4]:
                 response += f"• {p}\n"
 
-    # AI Guidance
     response += "\n🧠 AI GUIDANCE\n"
     response += f"{ai_text}\n"
 
-    # Emergency
     response += emergency_check(user_input)
-
-    # MODEL CHECK
     response += "\n🤖 MODEL CHECK\n"
-    response += f"ML Prediction: {disease_ml}\n"
-    response += f"Dataset Match: {disease_rule}\n"
+    response += f"ML Prediction: {disease_ml if disease_ml else 'Inconclusive (Low Confidence)'}\n"
+    response += f"Dataset Match: {disease_rule if disease_rule else 'No Match'}\n"
 
-    if disease_ml == disease_rule:
+    if disease_ml and disease_rule and disease_ml == disease_rule:
         response += "✅ High confidence result\n"
     else:
-        response += "⚠️ Results differ — consult a doctor\n"
+        response += "⚠️ Results differ or are inconclusive — consult a doctor\n"
 
     return response
 
-# =========================
-# RUN
-# =========================
 if __name__ == "__main__":
     while True:
         q = input("\nAsk symptoms (or exit): ")

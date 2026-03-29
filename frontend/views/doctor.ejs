@@ -260,6 +260,14 @@
                     </button>
                 </div>
 
+                <!-- Customized File Upload Input -->
+                <div style="margin-bottom: 20px;">
+                    <label for="imageUpload"
+                        style="display: block; color: var(--text-muted); margin-bottom: 8px;">Upload Medical Output
+                        (X-Ray, Scan, etc.)</label>
+                    <input type="file" id="imageUpload" accept="image/*" class="glass-input"
+                        style="width: 100%; padding: 10px; cursor: pointer;" />
+                </div>
                 <!-- Loader -->
                 <div id="loader" class="loader"></div>
 
@@ -364,11 +372,13 @@
         async function askAI() {
             const question = document.getElementById("question").value;
             const language = document.getElementById("language").value;
+            const fileInput = document.getElementById("imageUpload");
             const resultBox = document.getElementById("result");
             const loader = document.getElementById("loader");
 
-            if (!question.trim()) {
-                resultBox.innerHTML = '<span style="color: #fca5a5;">⚠️ Please specify your symptoms before analyzing.</span>';
+            // Check if neither text nor an image is provided
+            if (!question.trim() && fileInput.files.length === 0) {
+                resultBox.innerHTML = '<span style="color: #fca5a5;">⚠️ Please specify your symptoms or upload an image before analyzing.</span>';
                 return;
             }
 
@@ -376,23 +386,50 @@
             loader.style.display = "block";
 
             try {
-                const res = await fetch("/ask", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ question, lang: language })
-                });
+                let formattedResponse = "";
 
-                const data = await res.json();
+                // Case 1: Image Uploaded (Hit /analyze-image directly to Python)
+                if (fileInput.files.length > 0) {
+                    const formData = new FormData();
+                    formData.append("image", fileInput.files[0]);
+
+                    const imageRes = await fetch("http://127.0.0.1:5000/analyze-image", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (imageRes.ok) {
+                        const imgData = await imageRes.json();
+                        formattedResponse += `<div style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                            <strong>🖼️ Image Scan Result:</strong><br>
+                            Prediction: <span style="color: #a78bfa;">${imgData.prediction}</span><br>
+                            Confidence: ${(imgData.confidence * 100).toFixed(1)}%
+                        </div>`;
+                    } else {
+                        formattedResponse += '<div style="color: #fca5a5;">⚠️ Failed to analyze the image. Please try again.</div><br>';
+                    }
+                }
+
+                // Case 2: Text Provided (Hit /ask via Node.js Server)
+                if (question.trim()) {
+                    const res = await fetch("/ask", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ question, lang: language })
+                    });
+
+                    const data = await res.json();
+
+                    let aiText = data.response
+                        .replace(/\n\n/g, "<br><br>")
+                        .replace(/\n/g, "<br>")
+                        .replace(/•/g, "<span style='color: #0ea5e9; margin-right: 8px;'>★</span>")
+                        .replace(/\*\*([^*]+)\*\*/g, "<strong style='color: #38bdf8;'>$1</strong>");
+
+                    formattedResponse += aiText;
+                }
 
                 loader.style.display = "none";
-
-                // Format response heavily to look good on glass UI
-                let formattedResponse = data.response
-                    .replace(/\n\n/g, "<br><br>")
-                    .replace(/\n/g, "<br>")
-                    .replace(/•/g, "<span style='color: #0ea5e9; margin-right: 8px;'>★</span>")
-                    .replace(/\*\*([^*]+)\*\*/g, "<strong style='color: #38bdf8;'>$1</strong>"); // Bold handling
-
                 resultBox.innerHTML = `<div style="animation: fadeInUp 0.4s ease;">${formattedResponse}</div>`;
             } catch (err) {
                 loader.style.display = "none";

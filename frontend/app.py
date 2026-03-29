@@ -2,9 +2,32 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from medical import ask
 from deep_translator import GoogleTranslator
+from vision.image_analyzer import ImageAnalyzer
+import os
 
 app = Flask(__name__)
 CORS(app)
+
+analyzer = ImageAnalyzer()
+
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@app.route("/analyze-image", methods=["POST"])
+def analyze_image():
+
+    file = request.files["image"]
+
+    path = os.path.join(UPLOAD_FOLDER, file.filename)
+
+    file.save(path)
+
+    label, score = analyzer.analyze(path)
+
+    return jsonify({
+        "prediction": label,
+        "confidence": float(score)
+    })
 
 @app.route('/predict', methods=['POST'])
 def predict():

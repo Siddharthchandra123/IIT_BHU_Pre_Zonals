@@ -3,7 +3,6 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-# ---------- OPTIONAL SUMMARIZER ----------
 USE_SUMMARIZER = True
 symptoms_df = pd.read_csv(r"C:\Users\Lenovo\Downloads\IIT BHU\dataset\Disease symptom prediction\dataset.csv")
 desc_df = pd.read_csv(r"C:\Users\Lenovo\Downloads\IIT BHU\dataset\Disease symptom prediction\symptom_Description.csv")
@@ -30,7 +29,6 @@ def predict_disease_ml(symptoms_list):
 X_test = test_df.drop("prognosis", axis=1)
 y_test = test_df["prognosis"]
 
-# 🔥 ALIGN COLUMNS
 X_test = X_test.reindex(columns=X.columns, fill_value=0)
 
 accuracy = model_ml.score(X_test, y_test)
@@ -55,10 +53,8 @@ else:
     summarizer = None
 
 
-# ---------- SIMPLIFY ANSWER ----------
 def simplify_answer(text):
 
-    # limit very long answers
     text = text[:1200]
 
     if summarizer:
@@ -73,19 +69,16 @@ def simplify_answer(text):
         except:
             pass
 
-    # fallback (no AI)
     sentences = text.split(". ")
     return ". ".join(sentences[:3])
 
 
-# ---------- FORMAT OUTPUT ----------
 def format_output(text):
     parts = text.split(". ")
     bullets = "\n".join(["• " + p.strip() for p in parts if len(p) > 5])
     return bullets
 
 
-# ---------- EMERGENCY CHECK ----------
 def emergency_check(text):
     danger_words = [
         "chest pain",
@@ -100,13 +93,11 @@ def emergency_check(text):
     return ""
 
 
-# ---------- LOAD DATA ----------
 df = pd.read_csv("medquad_qa.csv")
 
 questions = df["Question"].tolist()
 answers = df["Answer"].tolist()
 
-# ---------- LOAD EMBEDDING MODEL ----------
 print("Loading AI model...")
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -138,10 +129,8 @@ def normalize_input(text):
 
     return text
 
-# ---------- ASK FUNCTION ----------
 def ask(user_input):
 
-    # -------- AI semantic response --------
     ml_text = normalize_for_ml(user_input)
 
     input_df = pd.DataFrame(
@@ -159,18 +148,22 @@ def ask(user_input):
     for dist, idx in zip(distances[0], indices[0]):
         text = answers[idx].lower()
 
-        # keep only if symptoms overlap
-        if dist < 1.2 and any(sym in text for sym in user_input.split()):
+        if dist < 1.0 and any(sym in text for sym in user_input.split()):
             ai_responses.append(simplify_answer(answers[idx]))
 
-
-    ai_text = " ".join(ai_responses[:2])
+    if not ai_responses:
+        ai_text = "I do not have enough specific medical information to answer this safely."
+    else:
+        ai_text = " ".join(ai_responses[:2])
 
 
     probs = model_ml.predict_proba(input_df)[0]
     confidence = max(probs)
 
-    disease_ml = model_ml.predict(input_df)[0]
+    if confidence < 0.65:
+        disease_ml = "Unknown (Confidence too low)"
+    else:
+        disease_ml = model_ml.predict(input_df)[0]
 
     disease_rule = predict_disease(user_input)
 
@@ -201,7 +194,6 @@ def ask(user_input):
     response += emergency_check(user_input)
     response += care_advice()
 
-    # -------- Prediction comparison --------
     response += f"\n🧠 ML Prediction: {disease_ml}"
     response += f"\n📚 Dataset Match: {disease_rule}"
 
@@ -236,20 +228,28 @@ def symptom_check(text):
     return ""
 def predict_disease(user_input):
     user_symptoms = user_input.lower().split()
+    
+    stop_words = {"hi", "hello", "how", "are", "you", "whats", "up", "buddy", "i", "am", "my", "is", "the", "a", "an"}
+    filtered_symptoms = [s for s in user_symptoms if s not in stop_words and len(s) > 2]
+
+    if not filtered_symptoms:
+        return None
 
     best_match = None
     max_matches = 0
 
     for _, row in symptoms_df.iterrows():
         row_symptoms = " ".join(row.dropna().astype(str)).lower()
-
-        matches = sum(sym in row_symptoms for sym in user_symptoms)
+        
+        matches = sum(1 for sym in filtered_symptoms if f" {sym} " in f" {row_symptoms} ")
 
         if matches > max_matches:
             max_matches = matches
             best_match = row["Disease"]
 
-    return best_match
+    if max_matches > 0:
+        return best_match
+    return None
 
 def get_description(disease):
     result = desc_df[desc_df["Disease"] == disease]
@@ -295,7 +295,6 @@ def care_advice():
     return "\n\n👉 Drink ORS or fluids\n👉 Rest well\n👉 See doctor if symptoms last > 2 days"
 
 
-# ---------- CHAT LOOP ----------
 while True:
     q = input("\nAsk health question (or type exit): ")
     if q.lower() == "exit":
@@ -307,13 +306,10 @@ def save_model():
     import joblib
     import faiss
 
-    # save ML model
     joblib.dump(model_ml, "disease_model.pkl")
 
-    # save feature columns
     joblib.dump(X.columns.tolist(), "feature_columns.pkl")
 
-    # save FAISS index
     faiss.write_index(index, "rag_index.faiss")
 
     print("✅ Models saved!")
