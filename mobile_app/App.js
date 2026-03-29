@@ -5,8 +5,8 @@ import { WebView } from 'react-native-webview';
 import * as Location from 'expo-location';
 
 export default function App() {
-  // Pointing to your machine's local Wi-Fi IP address on port 3000
-  const LOCAL_URL = 'http://192.168.29.190:3000';
+  // PRODUCTION URL: Now pointing to your live Render.com Cloud Server!
+  const PRODUCTION_URL = 'https://chikitsalya-frontend.onrender.com';
   const [injectedCode, setInjectedCode] = useState(null);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function App() {
         <StatusBar barStyle="dark-content" />
         {injectedCode ? (
           <WebView
-            source={{ uri: LOCAL_URL }}
+            source={{ uri: PRODUCTION_URL }}
             style={styles.webview}
             javaScriptEnabled={true}
             domStorageEnabled={true}
