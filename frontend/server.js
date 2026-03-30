@@ -25,9 +25,8 @@ app.set('view engine', 'ejs');
 
 // Health check (important for Render)
 app.get('/', (req, res) => {
-    res.send("Server is live 🚀");
+    res.render('intro');
 });
-
 // Intro page
 app.get('/intro', (req, res) => {
     res.render('intro');
