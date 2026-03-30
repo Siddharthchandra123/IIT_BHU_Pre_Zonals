@@ -1,3 +1,12 @@
+const { execSync } = require('child_process');
+try {
+    console.log("Forcing pure NPM Install to repair Cloud dependencies...");
+    execSync('npm install', { stdio: 'inherit' });
+    console.log("NPM Install complete. Booting server...");
+} catch(e) {
+    console.log("NPM Install warning: ", e.message);
+}
+
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
