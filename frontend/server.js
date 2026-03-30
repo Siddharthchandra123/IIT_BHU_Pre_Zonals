@@ -51,25 +51,31 @@ app.get('/hospitals', (req, res) => {
 app.post('/ask', async (req, res) => {
     try {
         if (!PYTHON_API_URL) {
-            throw new Error("Missing PYTHON_API_URL");
+            throw new Error("Missing PYTHON_API_URL in Environment Variables");
         }
 
         const userQuestion = req.body.question;
         const userLang = req.body.lang || "en";
+        
+        // Strip trailing slash if the user accidentally added it in Render config
+        const safeApiUrl = PYTHON_API_URL.endsWith('/') ? PYTHON_API_URL.slice(0, -1) : PYTHON_API_URL;
 
-        console.log("➡️ Sending request to backend:", PYTHON_API_URL);
+        console.log(`➡️ Sending request to backend: ${safeApiUrl}/predict`);
 
-        const response = await axios.post(`${PYTHON_API_URL}/predict`, {
+        const response = await axios.post(`${safeApiUrl}/predict`, {
             query: userQuestion,
             lang: userLang
-        });
+        }, { timeout: 60000 }); // 60s timeout to allow cold start
 
         res.json({ response: response.data.reply });
 
     } catch (error) {
         console.error("❌ Error:", error.message);
+        if (error.response) {
+            console.error("Backend returned:", error.response.data);
+        }
         res.status(500).json({
-            response: "Error: Could not connect to AI backend."
+            response: `Error: Could not connect to AI backend. Reason: ${error.message}`
         });
     }
 });
