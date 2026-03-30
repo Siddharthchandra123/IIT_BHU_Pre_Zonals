@@ -80,13 +80,9 @@ app.post('/ask', async (req, res) => {
     }
 });
 
-// ----------- OPTIONAL ROUTES (ADD LATER SAFELY) ----------- //
-// Uncomment only after everything works
-
-/*
+// ----------- HOSPITAL ROUTE ----------- //
 const hospitalRoutes = require('./routes/hospital');
 app.use('/api', hospitalRoutes);
-*/
 
 // ----------- START SERVER ----------- //
 app.listen(PORT, "0.0.0.0", () => {

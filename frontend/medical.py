@@ -108,9 +108,10 @@ def predict_rule(symptoms):
     return best if score > 0 else None
 
 
-def predict_ml(symptoms):
+def predict_ml(user_input):
+    ml_text = user_input.replace(" ", "_")
     input_df = pd.DataFrame(
-        [[1 if col in symptoms else 0 for col in feature_columns]],
+        [[1 if col in ml_text else 0 for col in feature_columns]],
         columns=feature_columns
     )
 
@@ -139,7 +140,7 @@ def ask(user_input):
     symptoms = user_input.split()
 
     disease_rule = predict_rule(symptoms)
-    disease_ml = predict_ml(symptoms)
+    disease_ml = predict_ml(user_input)
     ai_text = rag_answer(user_input)
 
     response = ""
