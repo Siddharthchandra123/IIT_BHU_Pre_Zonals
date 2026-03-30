@@ -8,6 +8,5 @@ mobile_app/android/
 mobile_app/ios/
 dist/
 build/
-package-lock.json
 *.zip
 *.rar
