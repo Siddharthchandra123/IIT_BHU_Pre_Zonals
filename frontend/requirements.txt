@@ -11,3 +11,5 @@ torch
 faiss-cpu
 openpyxl
 PyPDF2
+
+joblib

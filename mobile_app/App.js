@@ -1,66 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, StyleSheet, ActivityIndicator, View } from 'react-native';
+import { StatusBar, StyleSheet, ActivityIndicator, View, Text } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import * as Location from 'expo-location';
 
 export default function App() {
-  // PRODUCTION URL: Now pointing to your live Render.com Cloud Server!
   const PRODUCTION_URL = 'https://chikitsalya-frontend.onrender.com';
   const [injectedCode, setInjectedCode] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
+      // 1. Request Permission
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permission to access location was denied');
-        setInjectedCode('true;');
+        setInjectedCode('true;'); // Permission denied, proceed anyway
         return;
       }
 
       try {
-        let loc = await Location.getCurrentPositionAsync({});
+        // 2. Fetch Location with a 6-second timeout to prevent hanging
+        const locationPromise = Location.getCurrentPositionAsync({ 
+          accuracy: Location.Accuracy.Balanced 
+        });
         
-        // This script runs BEFORE any website code, ensuring navigator.geolocation is ready instantly.
-        const fakeGeolocation = `
-          (function() {
-            const locData = {
-              coords: {
-                latitude: ${loc.coords.latitude},
-                longitude: ${loc.coords.longitude},
-                accuracy: ${loc.coords.accuracy || 10},
-                altitude: ${loc.coords.altitude || null},
-                altitudeAccuracy: ${loc.coords.altitudeAccuracy || null},
-                heading: ${loc.coords.heading || null},
-                speed: ${loc.coords.speed || null}
-              },
-              timestamp: Date.now()
-            };
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('GPS Timeout')), 6000)
+        );
 
-            const overwriteGeolocation = () => {
-              window.navigator.geolocation.getCurrentPosition = function(successCallback, errorCallback) {
-                setTimeout(() => successCallback(locData), 0);
+        // Race the GPS against the clock
+        const loc = await Promise.race([locationPromise, timeoutPromise])
+          .catch((err) => {
+            console.log("GPS search timed out or failed, loading site without pre-fill.");
+            return null; 
+          });
+
+        if (loc) {
+          const fakeGeolocation = `
+            (function() {
+              const locData = {
+                coords: {
+                  latitude: ${loc.coords.latitude},
+                  longitude: ${loc.coords.longitude},
+                  accuracy: ${loc.coords.accuracy || 10}
+                },
+                timestamp: Date.now()
               };
-              window.navigator.geolocation.watchPosition = function(successCallback) {
-                setTimeout(() => successCallback(locData), 0);
+              window.navigator.geolocation.getCurrentPosition = function(s, e) {
+                setTimeout(() => s(locData), 0);
+              };
+              window.navigator.geolocation.watchPosition = function(s) {
+                setTimeout(() => s(locData), 0);
                 return 1;
               };
-            };
-
-            overwriteGeolocation();
-            // Ensure child elements and third-party scripts utilize the mock coordinates
-            Object.defineProperty(window.navigator, 'geolocation', {
-              value: window.navigator.geolocation,
-              configurable: false,
-              writable: false
-            });
-          })();
-          true;
-        `;
-        setInjectedCode(fakeGeolocation);
+            })();
+            true;
+          `;
+          setInjectedCode(fakeGeolocation);
+        } else {
+          setInjectedCode('true;'); // Timeout reached, load site without fake GPS
+        }
       } catch (error) {
-        console.error("Error getting location:", error);
-        setInjectedCode('true;');
+        setInjectedCode('true;'); // General error, proceed anyway
       }
     })();
   }, []);
@@ -68,7 +69,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle="light-content" />
         {injectedCode ? (
           <WebView
             source={{ uri: PRODUCTION_URL }}
@@ -77,10 +78,18 @@ export default function App() {
             domStorageEnabled={true}
             geolocationEnabled={true}
             injectedJavaScriptBeforeContentLoaded={injectedCode}
+            startInLoadingState={true}
+            renderLoading={() => (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0ea5e9" />
+                <Text style={styles.loadingText}>Connecting to Chikitsalya Cloud...</Text>
+              </View>
+            )}
           />
         ) : (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0B1120' }}>
+          <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0ea5e9" />
+            <Text style={styles.loadingText}>Optimizing GPS Signal...</Text>
           </View>
         )}
       </SafeAreaView>
@@ -95,5 +104,18 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#0B1120',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  loadingText: {
+    color: '#94a3b8',
+    marginTop: 15,
+    fontSize: 14,
+    fontWeight: '500',
   }
 });
