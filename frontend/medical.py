@@ -12,20 +12,20 @@ qa_df = None
 answers = None
 model_ml = None
 feature_columns = None
-embed_model = None
-index = None
+tfidf_vectorizer = None
+tfidf_matrix = None
 
 data_loaded = False
 
 
 def load_resources():
     global symptoms_df, desc_df, prec_df, train_df, qa_df
-    global model_ml, feature_columns, embed_model, index, answers, data_loaded
+    global model_ml, feature_columns, tfidf_vectorizer, tfidf_matrix, answers, data_loaded
 
     if data_loaded:
         return
 
-    print("🔥 Loading AI resources...")
+    print("🔥 Loading base AI datasets...")
 
     # Load datasets
     symptoms_df = pd.read_csv("dataset.csv")
@@ -33,32 +33,27 @@ def load_resources():
     prec_df = pd.read_csv("symptom_precaution.csv")
     train_df = pd.read_csv("Training.csv")
     qa_df = pd.read_csv("medquad_qa.csv")
+    
+    questions = qa_df["Question"].astype(str).tolist()
     answers = qa_df["Answer"].tolist()
 
     # Load ML model
+    print("🧠 Loading ML Model...")
     model_ml = joblib.load("disease_model.pkl")
     feature_columns = joblib.load("feature_columns.pkl")
 
-    # Lazy import heavy libs ONLY here
-    from sentence_transformers import SentenceTransformer
-    import faiss
-
-    print("🧠 Loading embedding model...")
-    embed_model_local = SentenceTransformer('all-MiniLM-L6-v2')
-
-    print("📦 Loading FAISS index...")
-    index_local = faiss.read_index("rag_index.faiss")
-
-    embed_model = embed_model_local
-    index = index_local
+    print("⚡ Instant-Boot: Compiling TF-IDF Search Engine...")
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    
+    vec = TfidfVectorizer(stop_words='english', max_features=10000)
+    mat = vec.fit_transform(questions)
 
     # assign to globals
-    globals()['embed_model'] = embed_model
-    globals()['index'] = index
+    globals()['tfidf_vectorizer'] = vec
+    globals()['tfidf_matrix'] = mat
 
     data_loaded = True
-    print("✅ All resources loaded!")
-
+    print("✅ All resources loaded! Server is 100% invincible!")
 
 # ---------------- UTIL FUNCTIONS ---------------- #
 
@@ -120,13 +115,21 @@ def predict_ml(user_input):
 
 
 def rag_answer(query):
-    vec = embed_model.encode([query]).astype('float32')
-    D, I = index.search(vec, k=2)
-
-    valid = [answers[I[0][i]] for i in range(len(I[0])) if D[0][i] < 1.3]
-
+    from sklearn.metrics.pairwise import cosine_similarity
+    
+    query_vec = tfidf_vectorizer.transform([query])
+    similarities = cosine_similarity(query_vec, tfidf_matrix).flatten()
+    
+    # Get top 2 best-matching indices
+    top_indices = similarities.argsort()[-2:][::-1]
+    
+    valid = []
+    for i in top_indices:
+        if similarities[i] > 0.15: # TF-IDF needs lower threshold
+            valid.append(answers[i])
+            
     if not valid:
-        return "I don't have enough medical information. Please consult a doctor."
+        return "I don't have enough specific medical information to answer that safely. Please consult a doctor."
 
     return simplify(" ".join(valid))
 
