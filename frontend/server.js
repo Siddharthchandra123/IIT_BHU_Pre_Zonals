@@ -1,14 +1,18 @@
 const express = require('express');
 const axios = require('axios');
+const path = require('path');
+const ejs = require('ejs'); // Explicitly link EJS at startup
 const app = express();
 
 // Production-ready Cloud Configuration
 const PORT = process.env.PORT || 3000;
 const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://127.0.0.1:5000';
 
-app.use(express.json());
-app.use(express.static('public')); // Ensure your styles.css is in a 'public' folder
+// Explicitly set paths for views and static files to avoid Linux path errors
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public'))); 
 
 app.get('/', (req, res) => {
     res.render('intro');   // intro page first
