@@ -37,10 +37,18 @@ def load_resources():
     questions = qa_df["Question"].astype(str).tolist()
     answers = qa_df["Answer"].tolist()
 
-    # Load ML model
-    print("🧠 Loading ML Model...")
-    model_ml = joblib.load("disease_model.pkl")
-    feature_columns = joblib.load("feature_columns.pkl")
+    # 🚀 The Ultimate Fix: Train ML Model Dynamically 
+    # Pickling a model on Windows and unpickling on Linux can cause C-level Segfaults (502 Bad Gateway).
+    # Since the dataset is tiny, we just train it natively in 1 second!
+    print("🧠 Dynamically Training ML Model to prevent OS-level Segfaults...")
+    from sklearn.ensemble import RandomForestClassifier
+    
+    X = train_df.drop("prognosis", axis=1)
+    y = train_df["prognosis"]
+    
+    model_ml = RandomForestClassifier(n_estimators=100, n_jobs=1)
+    model_ml.fit(X, y)
+    feature_columns = X.columns.tolist()
 
     print("⚡ Instant-Boot: Compiling TF-IDF Search Engine...")
     from sklearn.feature_extraction.text import TfidfVectorizer
