@@ -2,31 +2,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  /* Core Colors */
-  --bg-dark: #0B1120;
-  --bg-card: rgba(15, 23, 42, 0.6);
-  --bg-card-hover: rgba(30, 41, 59, 0.8);
-  
+  /* Core Colors - AllCare Aesthetic */
+  --bg-dark: #0B0E23;
+  /* Abyssal Navy */
+  --bg-hero: linear-gradient(135deg, #E8EAF6 0%, #FFECF0 100%);
+  /* Periwinkle to Peach */
+  --bg-card: rgba(255, 255, 255, 0.05);
+  /* Ultra-Glass */
+  --bg-card-light: rgba(255, 255, 255, 0.6);
+  /* Frosted Glass */
+
   /* Accents */
-  --primary-glow: #0ea5e9; /* Bright Cyan/Blue */
-  --secondary-glow: #8b5cf6; /* Vibrant Purple */
-  --accent-teal: #14b8a6;
-  
-  /* Status Colors */
-  --error: #ef4444;
-  --success: #10b981;
-  
+  --accent-indigo: #5B6BF0;
+  /* Royal Indigo */
+  --accent-purple: #9C27B0;
+  /* Neon Purple */
+  --accent-blue: #03A9F4;
+  /* Electric Blue */
+
+  --primary-glow: #5B6BF0;
+  --secondary-glow: #9C27B0;
+
   /* Text */
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  
+  --text-main: #FFFFFF;
+  --text-dark: #1E293B;
+  /* For light areas */
+  --text-muted: #94A3B8;
+
   /* Glassmorphism */
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+
   /* Transitions */
-  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --radius-max: 30px;
 }
+
 
 * {
   margin: 0;
@@ -73,7 +84,12 @@ body::after {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   line-height: 1.2;
@@ -250,6 +266,7 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -257,15 +274,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 @keyframes pulseGlow {
-  0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 15px rgba(14, 165, 233, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+  }
 }
 
 .animate-fade-up {
@@ -281,7 +314,8 @@ h1, h2, h3, h4, h5, h6 {
 .main-wrapper {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 120px 5% 60px; /* Account for fixed navbar */
+  padding: 120px 5% 60px;
+  /* Account for fixed navbar */
 }
 
 /* Scrollbar */
@@ -331,7 +365,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 15px 5%;
     gap: 12px;
   }
-  
+
   .navbar.scrolled {
     padding: 10px 5%;
   }
@@ -342,12 +376,13 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     width: 100%;
   }
-  
+
   .nav-links a {
     font-size: 0.85rem;
   }
-  
+
   .main-wrapper {
-    padding-top: 140px; /* Account for taller stacked navbar */
+    padding-top: 140px;
+    /* Account for taller stacked navbar */
   }
 }
