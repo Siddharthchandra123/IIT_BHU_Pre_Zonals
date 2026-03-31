@@ -80,11 +80,35 @@ app.post('/ask', async (req, res) => {
     }
 });
 
-// ----------- HOSPITAL ROUTE ----------- //
+// ----------- HOSPITAL & PHARMACY ROUTES ----------- //
 const hospitalRoutes = require('./routes/hospital');
+const pharmacyRoutes = require('./routes/pharmacy'); // New Indian Radar logic
+
 app.use('/api', hospitalRoutes);
+app.use('/api', pharmacyRoutes);
+
+// View routes
+app.get('/hospitals', (req, res) => { res.render('hospital'); });
+app.get('/pharmacies', (req, res) => { res.render('pharmacy'); });
+
+// NEW: Data Feed Integration - allows "feeding" local shops in production
+app.post('/api/add-pharmacy', (req, res) => {
+    const fs = require('fs');
+    const newPharmacy = req.body;
+    const feedPath = path.join(__dirname, 'pharmacy_data.json');
+    
+    let feedData = [];
+    if (fs.existsSync(feedPath)) {
+        feedData = JSON.parse(fs.readFileSync(feedPath, 'utf8'));
+    }
+    
+    feedData.push(newPharmacy);
+    fs.writeFileSync(feedPath, JSON.stringify(feedData, null, 2));
+    
+    res.json({ success: true, message: "Pharmacy added to local feed!" });
+});
 
 // ----------- START SERVER ----------- //
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Server running on port ${PORT}`);
-});
+});

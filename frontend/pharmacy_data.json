@@ -1,0 +1,22 @@
+[
+  { "name": "Apollo Pharmacy (24/7)", "address": "Connaught Place, Delhi", "lat": 28.6315, "lon": 77.2167, "source": "local_feed" },
+  { "name": "MedPlus Chemist", "address": "Andheri West, Mumbai", "lat": 19.1136, "lon": 72.8697, "source": "local_feed" },
+  { "name": "Netmeds Store", "address": "Indiranagar, Bangalore", "lat": 12.9791, "lon": 77.6408, "source": "local_feed" },
+  { "name": "Mittal Medicos", "address": "Civil Lines, Moradabad", "lat": 28.8386, "lon": 78.7733, "source": "local_feed" },
+  { "name": "City Dawa Khana", "address": "Near Clock Tower, Bhopal", "lat": 23.2599, "lon": 77.4126, "source": "local_feed" },
+  { "name": "Sharma Drug House", "address": "Main Market, Patna", "lat": 25.5941, "lon": 85.1376, "source": "local_feed" },
+  { "name": "Hazratganj Medicals", "address": "Lucknow Center", "lat": 26.8467, "lon": 80.9462, "source": "local_feed" },
+  { "name": "Ranchi Health Care", "address": "Albert Ekka Chowk", "lat": 23.3441, "lon": 85.3090, "source": "local_feed" },
+  { "name": "Ahmedabad Generic Store", "address": "Ellis Bridge", "lat": 23.0225, "lon": 72.5714, "source": "local_feed" },
+  { "name": "Kochi Pharma", "address": "MG Road, Kochi", "lat": 9.9312, "lon": 76.2673, "source": "local_feed" },
+  { "name": "Guwahati Med House", "address": "Paltan Bazaar", "lat": 26.1158, "lon": 91.7086, "source": "local_feed" },
+  { "name": "Roorkee Medical Hall", "address": "Civil Lines", "lat": 29.8543, "lon": 77.8880, "source": "local_feed" },
+  { "name": "Bhagalpur Drug Mart", "address": "Station Road", "lat": 25.2425, "lon": 87.0145, "source": "local_feed" },
+  { "name": "Jabalpur Health Point", "address": "Civic Center", "lat": 23.1686, "lon": 79.9339, "source": "local_feed" },
+  { "name": "Madurai Dawa Store", "address": "Meenakshi Amman Area", "lat": 9.9179, "lon": 78.1196, "source": "local_feed" },
+  { "name": "Indore Medical Square", "address": "Rajwada Market", "lat": 22.7196, "lon": 75.8577, "source": "local_feed" },
+  { "name": "Chandigarh Care Store", "address": "Sector 17 Market", "lat": 30.7333, "lon": 76.7794, "source": "local_feed" },
+  { "name": "Jaipur Ayurvedic & Med", "address": "Pink City Gate", "lat": 26.9124, "lon": 75.7873, "source": "local_feed" },
+  { "name": "Surat Diamond Pharma", "address": "Varachha Road", "lat": 21.1702, "lon": 72.8311, "source": "local_feed" },
+  { "name": "Coimbatore Chemist", "address": "RS Puram West", "lat": 11.0168, "lon": 76.9558, "source": "local_feed" }
+]
