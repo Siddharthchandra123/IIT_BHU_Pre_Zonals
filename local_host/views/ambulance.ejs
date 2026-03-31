@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Ambulance Services | AI Health Assistant</title>
+    <link rel="stylesheet" href="/style.css">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .ambulance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .ambulance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            z-index: 1;
+            /* Keep map below fixed headers if any */
+        }
+
+        .booking-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Form Styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: #e2e8f0;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .glass-input-sm {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            outline: none;
+            transition: var(--transition-smooth);
+            font-size: 1rem;
+        }
+
+        .glass-input-sm:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            gap: 6px;
+        }
+
+        .status-searching {
+            background: rgba(234, 179, 8, 0.15);
+            color: #facc15;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .status-dispatched {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .driver-info {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .driver-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .eta-box {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            text-align: center;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar" id="navbar">
+        <a href="/" class="brand">
+            <span>⚕️</span> AI Chitikshalaya
+        </a>
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/home">Diagnostics</a>
+            <a href="/ambulance" style="color: #fff;">Ambulance</a>
+            <a href="/hospitals">Find Hospitals</a>
+        </nav>
+    </header>
+
+    <main class="main-wrapper" style="padding-top: 120px;">
+
+        <div class="text-center" style="margin-bottom: 40px;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">
+                <span style="color: #ef4444;">🚨</span> Emergency Rescue
+            </h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                Book an ambulance instantly. Track its live location as it reaches you.
+            </p>
+        </div>
+
+        <div class="ambulance-grid">
+
+            <!-- Left Side: Booking Form -->
+            <div class="glass-panel booking-card animate-fade-up">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 class="section-header" style="margin-bottom: 0;">
+                        🚑 Request Dispatch
+                    </h2>
+                    <span id="booking-status" style="display: none;" class="status-badge status-searching">
+                        <span class="loader-dot"
+                            style="display:inline-block; width:8px; height:8px; background:currentColor; border-radius:50%; animation: pulse 1s infinite alternate;"></span>
+                        Searching...
+                    </span>
+                </div>
+
+                <form id="bookingForm" onsubmit="handleBooking(event)">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label class="form-label">Patient Name</label>
+                        <input type="text" class="glass-input-sm" id="patientName" required placeholder="Enter name">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label class="form-label">Contact Number</label>
+                        <input type="tel" class="glass-input-sm" id="contactNumber" required
+                            placeholder="+91 XXXXX XXXXX">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label class="form-label">Emergency Type</label>
+                        <select class="glass-input-sm" id="emergencyType">
+                            <option value="cardiac">❤️ Cardiac Arrest / Heart Attack</option>
+                            <option value="accident">💥 Accident / Trauma</option>
+                            <option value="respiratory">🫁 Severe Breathing Difficulty</option>
+                            <option value="maternity">🤰 Maternity</option>
+                            <option value="other">🟢 General Emergency</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label class="form-label">Pickup Location (Auto-detected)</label>
+                        <textarea class="glass-input-sm" id="pickupLocation" rows="2"
+                            placeholder="Detecting location..." readonly></textarea>
+                    </div>
+
+                    <button type="submit" id="bookBtn" class="btn-glow"
+                        style="width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); border: none;">
+                        🚨 DISPATCH AMBULANCE
+                    </button>
+                </form>
+
+                <!-- Active Driver Card (Hidden initially) -->
+                <div id="driverInfo" class="driver-info">
+                    <div class="driver-header">
+                        <div style="font-size: 2.5rem;">👨‍✈️</div>
+                        <div>
+                            <h3 style="color: #fff; margin-bottom: 5px;">Ramesh Kumar</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">ALS Ambulance • UP32 XY 1234</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="tel:9876543210" class="btn-glow"
+                            style="flex: 1; text-align: center; padding: 8px; font-size: 0.9rem;">📞 Call Driver</a>
+                    </div>
+                    <div class="eta-box">
+                        ⏳ ETA: 4 Minutes (1.2 km away)
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Side: Live Map -->
+            <div class="glass-panel animate-fade-up" style="animation-delay: 0.2s; padding: 15px;">
+                <div id="map"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- MAP INITIALIZATION ---
+        // Initialize map centered roughly on India (will update to user location)
+        const map = L.map('map').setView([20.5937, 78.9629], 5);
+
+        // Add Dark Mode Map Tiles (CartoDB Dark Matter)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // Custom Icons
+        const userIcon = L.divIcon({
+            html: '<div style="font-size: 24px; text-shadow: 0 0 10px #0ea5e9;">📍</div>',
+            className: 'custom-div-icon',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30]
+        });
+
+        const ambulanceIcon = L.divIcon({
+            html: '<div style="font-size: 28px; filter: drop-shadow(0 0 8px #ef4444); transform: scaleX(-1);">🚑</div>',
+            className: 'custom-div-icon',
+            iconSize: [35, 35],
+            iconAnchor: [17, 17]
+        });
+
+        let userMarker = null;
+        let ambulanceMarker = null;
+        let userLocation = null;
+
+        // Get User Location
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    userLocation = [lat, lng];
+
+                    map.setView(userLocation, 14);
+
+                    userMarker = L.marker(userLocation, { icon: userIcon }).addTo(map)
+                        .bindPopup('Your Emergency Location').openPopup();
+
+                    document.getElementById('pickupLocation').value = `Geo-coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)} (Approx. Location Found)`;
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    document.getElementById('pickupLocation').value = "Location access denied. Please manually guide driver on call.";
+                }
+            );
+        }
+
+        // --- MOCK AMBULANCE TRACKING LOGIC ---
+        function handleBooking(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('bookBtn');
+            const status = document.getElementById('booking-status');
+            const driverInfo = document.getElementById('driverInfo');
+
+            if (!userLocation) {
+                alert("Please allow location access so we can dispatch the ambulance.");
+                return;
+            }
+
+            // UI Update: Searching
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.innerHTML = 'ALLOCATING VEHICLE...';
+            status.style.display = 'inline-flex';
+
+            // Simulate finding an ambulance after 2 seconds
+            setTimeout(() => {
+                // UI Update: Found
+                btn.style.display = 'none';
+
+                status.className = 'status-badge status-dispatched';
+                status.innerHTML = '✅ Dispatched & En Route';
+
+                driverInfo.style.display = 'block';
+
+                // Spawn ambulance approx 2km away from user
+                const ambLat = userLocation[0] - 0.015;
+                const ambLng = userLocation[1] - 0.015;
+
+                ambulanceMarker = L.marker([ambLat, ambLng], { icon: ambulanceIcon }).addTo(map)
+                    .bindPopup('Ambulance Approaching');
+
+                // Adjust map bounds to show both
+                const group = new L.featureGroup([userMarker, ambulanceMarker]);
+                map.fitBounds(group.getBounds().pad(0.5));
+
+                // Start simulated movement towards user
+                startSimulation(ambLat, ambLng);
+
+            }, 2000);
+        }
+
+        function startSimulation(startLat, startLng) {
+            let currentLat = startLat;
+            let currentLng = startLng;
+
+            // Calculate step size to reach user in approx 60 ticks
+            const steps = 60;
+            const latStep = (userLocation[0] - startLat) / steps;
+            const lngStep = (userLocation[1] - startLng) / steps;
+
+            let stepCount = 0;
+
+            const interval = setInterval(() => {
+                if (stepCount >= steps) {
+                    clearInterval(interval);
+                    document.querySelector('.eta-box').innerHTML = '✅ ARRIVED AT LOCATION';
+                    document.querySelector('.eta-box').style.background = 'rgba(34, 197, 94, 0.1)';
+                    document.querySelector('.eta-box').style.color = '#4ade80';
+                    document.querySelector('.eta-box').style.borderColor = 'rgba(34, 197, 94, 0.3)';
+                    return;
+                }
+
+                currentLat += latStep;
+                currentLng += lngStep;
+
+                // Add slight jitter for realism
+                const jitterLat = (Math.random() - 0.5) * 0.0005;
+                const jitterLng = (Math.random() - 0.5) * 0.0005;
+
+                ambulanceMarker.setLatLng([currentLat + jitterLat, currentLng + jitterLng]);
+
+                stepCount++;
+
+                // Update text loosely based on progress
+                if (stepCount % 15 === 0) {
+                    const mins = Math.max(1, 4 - Math.floor(stepCount / 15));
+                    document.querySelector('.eta-box').innerHTML = `⏳ ETA: ${mins} Minute${mins > 1 ? 's' : ''} (Approaching)`;
+                }
+
+            }, 1000); // Move every 1 second
+        }
+
+        // Add scrolled effect to nav
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+
+</html>

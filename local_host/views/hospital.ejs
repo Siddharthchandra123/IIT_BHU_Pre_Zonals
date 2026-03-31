@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Hospitals | AI Health Assistant</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .map-hero {
+            position: relative;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(11, 17, 32, 0.9)), url('https://www.transparenttextures.com/patterns/cubes.png');
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .map-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulseGlow 4s infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .map-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        #status {
+            margin-top: 25px;
+            font-size: 1.1rem;
+            color: #38bdf8;
+            height: 24px;
+            font-weight: 500;
+        }
+
+        /* Hospital Cards Grid */
+        #hospitalList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .hosp-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            transition: var(--transition-smooth);
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .hosp-card:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .hosp-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .hosp-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .hosp-info h3 {
+            font-size: 1.25rem;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .hosp-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .hosp-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-dir {
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-dir:hover {
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-hosp-call {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-hosp-call:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar" id="navbar">
+        <a href="/" class="brand">
+            <span>⚕️</span> AI Chitikshalaya
+        </a>
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/home">Diagnostics</a>
+            <a href="/ambulance">Ambulance</a>
+            <a href="/hospitals" style="color: #fff;">Find Hospitals</a>
+            <a href="/home#emergency" style="color: #fca5a5;">Emergency</a>
+        </nav>
+    </header>
+
+    <main class="main-wrapper">
+
+        <div class="map-hero">
+            <div class="map-orb"></div>
+            <div class="map-hero-content animate-fade-up">
+                <h1 style="font-size: 3rem; margin-bottom: 20px;">Locate Nearest <br> <span
+                        class="heading-gradient">Medical Facilities</span></h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 35px;">
+                    Use advanced geolocation to instantly find top-rated hospitals, clinics, and emergency centers near
+                    your current coordinates.
+                </p>
+                <button class="btn-glow" id="locateBtn" onclick="getLocation()"
+                    style="font-size: 1.2rem; padding: 16px 40px;">
+                    <span style="margin-right: 10px;">📍</span> Scan Environment
+                </button>
+                <div id="status"></div>
+            </div>
+        </div>
+
+        <div id="hospitalList">
+            <!-- Populated via API -->
+            <div
+                style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 20px; color: var(--text-muted);">
+                <span style="font-size: 3rem; display: block; margin-bottom: 15px; opacity: 0.5;">🛰️</span>
+                Awaiting environmental scan initiating command.
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Navbar Scrolled Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        const statusText = document.getElementById("status");
+        const listContainer = document.getElementById("hospitalList");
+
+        // Uses the exact logic required for integration, adapted for God-level UI output
+        function getLocation() {
+            statusText.innerHTML = "<span style='color: #0ea5e9;'>Establishing satellite uplink to determine coordinates...</span>";
+
+            // Visual feedback on button
+            const btn = document.getElementById('locateBtn');
+            btn.innerHTML = "<span class='loader' style='display:inline-block; width: 20px; height: 20px; border-width: 2px; margin: 0 10px 0 0; vertical-align: middle;'></span> Scanning...";
+            btn.style.opacity = '0.8';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(fetchHospitals, showError, { timeout: 10000 });
+            } else {
+                statusText.innerHTML = "<span style='color: #fca5a5;'>Geolocation is not supported by this browser interface.</span>";
+                resetButton();
+            }
+        }
+
+        function fetchHospitals(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            statusText.innerHTML = `<span style='color: #4ade80;'>Coordinates acquired! Querying medical database...</span>`;
+
+            fetch(`/api/hospitals?lat=${lat}&lon=${lon}`)
+                .then(res => res.json())
+                .then(data => {
+                    displayHospitals(data);
+                    statusText.innerHTML = ""; // Clear status when done
+                    resetButton();
+                })
+                .catch(err => {
+                    console.error("Fetch error", err);
+                    statusText.innerHTML = "<span style='color: #fca5a5;'>Error communicating with hospital API node.</span>";
+                    resetButton();
+                });
+        }
+
+        function displayHospitals(hospitals) {
+            listContainer.innerHTML = ""; // Clear existing grid
+
+            if (!hospitals || hospitals.length === 0) {
+                listContainer.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.05); border-radius: 20px; color: #fca5a5;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 15px;">📡</span>
+                    No medical facilities detected within the primary scan radius.
+                </div>`;
+                return;
+            }
+
+            // Generate premium cards dynamically matching new layout
+            hospitals.forEach((h, index) => {
+                const animDelay = (index * 0.1) + 's';
+                const phoneBlock = h.phone
+                    ? `<a href="tel:${h.phone}" class="action-btn btn-hosp-call">📞 Call</a>`
+                    : `<span class="action-btn btn-hosp-call" style="opacity: 0.5; cursor: not-allowed; text-decoration: line-through;">No Phone</span>`;
+
+                // Constructing the God-level HTML dynamically
+                const cardHTML = `
+                    <div class="hosp-card" style="animation-delay: ${animDelay};">
+                        <div class="hosp-header">
+                            <div class="hosp-icon">🏥</div>
+                            <div class="hosp-info">
+                                <h3>${h.name}</h3>
+                                <p>${h.address || 'Location data restricted.'}</p>
+                            </div>
+                        </div>
+                        <div class="hosp-actions">
+                            ${phoneBlock}
+                            <a href="https://maps.google.com/?q=${h.lat},${h.lon}" target="_blank" rel="noopener" class="action-btn btn-dir">
+                                🗺️ Nav
+                            </a>
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        function showError(error) {
+            resetButton();
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    statusText.innerHTML = "<span style='color: #fca5a5;'>Access denied. We require location permissions to locate facilities.</span>";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    statusText.innerHTML = "<span style='color: #fca5a5;'>Location information unreadable by sensors.</span>";
+                    break;
+                case error.TIMEOUT:
+                    statusText.innerHTML = "<span style='color: #fca5a5;'>Sensor scan timed out. Try again.</span>";
+                    break;
+                default:
+                    statusText.innerHTML = "<span style='color: #fca5a5;'>An unknown anomaly occurred.</span>";
+                    break;
+            }
+        }
+
+        function resetButton() {
+            const btn = document.getElementById('locateBtn');
+            btn.innerHTML = "<span style='margin-right: 10px;'>📍</span> Rescan Environment";
+            btn.style.opacity = '1';
+        }
+    </script>
+</body>
+
+</html>
