@@ -184,6 +184,15 @@
             </div>
         </div>
 
+        <!-- NEW: Filter System -->
+        <div class="filter-section animate-fade-up" style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation-delay: 0.2s;">
+            <button class="badge-pill active" onclick="filterHospitals('All')" id="filter-All">🌍 All Facilities</button>
+            <button class="badge-pill" onclick="filterHospitals('Multispeciality')" id="filter-Multispeciality">🏥 Multispeciality</button>
+            <button class="badge-pill" onclick="filterHospitals('Dentistry')" id="filter-Dentistry">🦷 Dentistry</button>
+            <button class="badge-pill" onclick="filterHospitals('Surgeon')" id="filter-Surgeon">🔬 Surgeon</button>
+            <button class="badge-pill" onclick="filterHospitals('Clinic')" id="filter-Clinic">🩺 Clinics</button>
+        </div>
+
         <div id="hospitalList">
             <!-- Populated via API -->
             <div
@@ -208,12 +217,12 @@
 
         const statusText = document.getElementById("status");
         const listContainer = document.getElementById("hospitalList");
+        let allHospitals = []; // Store full list for local filtering
 
         // Uses the exact logic required for integration, adapted for God-level UI output
         function getLocation() {
             statusText.innerHTML = "<span style='color: #0ea5e9;'>Establishing satellite uplink to determine coordinates...</span>";
 
-            // Visual feedback on button
             const btn = document.getElementById('locateBtn');
             btn.innerHTML = "<span class='loader' style='display:inline-block; width: 20px; height: 20px; border-width: 2px; margin: 0 10px 0 0; vertical-align: middle;'></span> Scanning...";
             btn.style.opacity = '0.8';
@@ -235,8 +244,9 @@
             fetch(`/api/hospitals?lat=${lat}&lon=${lon}`)
                 .then(res => res.json())
                 .then(data => {
+                    allHospitals = data; // Cache results
                     displayHospitals(data);
-                    statusText.innerHTML = ""; // Clear status when done
+                    statusText.innerHTML = "";
                     resetButton();
                 })
                 .catch(err => {
@@ -246,6 +256,20 @@
                 });
         }
 
+        function filterHospitals(category) {
+            // Update active pill UI
+            document.querySelectorAll('.badge-pill').forEach(p => p.classList.remove('active'));
+            document.getElementById(`filter-${category}`).classList.add('active');
+            
+            // Re-apply style.css active style via class if needed
+            // (Assumes .active class is defined in style.css or we can force it)
+            const filtered = category === 'All' 
+                ? allHospitals 
+                : allHospitals.filter(h => h.category === category);
+            
+            displayHospitals(filtered);
+        }
+
         function displayHospitals(hospitals) {
             listContainer.innerHTML = ""; // Clear existing grid
 
@@ -253,23 +277,24 @@
                 listContainer.innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.05); border-radius: 20px; color: #fca5a5;">
                     <span style="font-size: 3rem; display: block; margin-bottom: 15px;">📡</span>
-                    No medical facilities detected within the primary scan radius.
+                    No medical facilities found. Try changing the filter or scanning again.
                 </div>`;
                 return;
             }
 
-            // Generate premium cards dynamically matching new layout
             hospitals.forEach((h, index) => {
-                const animDelay = (index * 0.1) + 's';
+                const animDelay = (index * 0.05) + 's';
                 const phoneBlock = h.phone
                     ? `<a href="tel:${h.phone}" class="action-btn btn-hosp-call">📞 Call</a>`
                     : `<span class="action-btn btn-hosp-call" style="opacity: 0.5; cursor: not-allowed; text-decoration: line-through;">No Phone</span>`;
 
-                // Constructing the God-level HTML dynamically
                 const cardHTML = `
-                    <div class="hosp-card" style="animation-delay: ${animDelay};">
+                    <div class="hosp-card" style="animation-delay: ${animDelay}; opacity: 1;">
+                        <div class="hosp-tag" style="position: absolute; top: 15px; right: 20px; font-size: 0.75rem; background: rgba(14, 165, 233, 0.1); padding: 4px 10px; border-radius: 99px; color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.2);">
+                            ${h.category}
+                        </div>
                         <div class="hosp-header">
-                            <div class="hosp-icon">🏥</div>
+                            <div class="hosp-icon">${h.icon || '🏥'}</div>
                             <div class="hosp-info">
                                 <h3>${h.name}</h3>
                                 <p>${h.address || 'Location data restricted.'}</p>
@@ -311,6 +336,15 @@
             btn.style.opacity = '1';
         }
     </script>
+    <style>
+        .badge-pill.active {
+            background: rgba(14, 165, 233, 0.25);
+            border-color: #0ea5e9;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+        }
+    </style>
 </body>
+
 
 </html>

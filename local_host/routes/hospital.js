@@ -12,9 +12,9 @@ router.get('/hospitals', async (req, res) => {
     try {
         // Indian Local Facility Expansion: 
         // 1. Increases radius to 15000m (15km) to cover rural healthcare centers (PHC/CHC)
-        // 2. Includes amenity=clinic, doctors, and generic healthcare centers
+        // 2. Includes amenity=hospital, clinic, doctors, dentist
         // 3. Searches for both point nodes and campus buildings/ways
-        const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];(node(around:15000,${lat},${lon})["amenity"~"hospital|clinic|doctors"];node(around:15000,${lat},${lon})["healthcare"~"hospital|clinic|centre|clinic"];way(around:15000,${lat},${lon})["amenity"~"hospital|clinic|doctors"];way(around:15000,${lat},${lon})["healthcare"~"hospital|clinic|centre|clinic"];);out center;`;
+        const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];(node(around:15000,${lat},${lon})["amenity"~"hospital|clinic|doctors|dentist"];node(around:15000,${lat},${lon})["healthcare"~"hospital|clinic|centre|dentist|surgeon"];way(around:15000,${lat},${lon})["amenity"~"hospital|clinic|doctors|dentist"];way(around:15000,${lat},${lon})["healthcare"~"hospital|clinic|centre|dentist|surgeon"];);out center;`;
 
         const response = await axios.get(overpassUrl);
         
@@ -34,14 +34,37 @@ router.get('/hospitals', async (req, res) => {
              if (h.tags['addr:city']) addrArray.push(h.tags['addr:city']);
              if (h.tags['addr:state']) addrArray.push(h.tags['addr:state']);
 
-             const addr = addrArray.length > 0 ? addrArray.join(", ") : "Local Medical Facility (Navigate for precise location)";
+             const addr = addrArray.length > 0 ? addrArray.join(", ") : "Local Medical Facility";
              
              // Capture any contact numbers stored in various OSM formats
              const phone = h.tags.phone || h.tags['contact:phone'] || h.tags['emergency:phone'] || "";
 
+             // --- Classification Logic ---
+             let category = "General";
+             let icon = "🏥";
+
+             const type = (h.tags.amenity || h.tags.healthcare || "").toLowerCase();
+             const speciality = (h.tags['healthcare:speciality'] || "").toLowerCase();
+
+             if (type.includes('dentist') || speciality.includes('dentist')) {
+                 category = "Dentistry";
+                 icon = "🦷";
+             } else if (type.includes('surgeon') || speciality.includes('surgery') || speciality.includes('surgeon')) {
+                 category = "Surgeon";
+                 icon = "🔬";
+             } else if (type.includes('clinic')) {
+                 category = "Clinic";
+                 icon = "🩺";
+             } else if (type.includes('hospital')) {
+                 category = "Multispeciality";
+                 icon = "🏥";
+             }
+
              return {
                  name: name,
                  address: addr,
+                 category: category,
+                 icon: icon,
                  lat: h.lat || (h.center ? h.center.lat : null),
                  lon: h.lon || (h.center ? h.center.lon : null),
                  phone: phone
@@ -52,7 +75,6 @@ router.get('/hospitals', async (req, res) => {
 
     } catch (err) {
         console.error("Overpass API Indian Extension Error:", err.message);
-        // Fallback to empty array instead of crashing on network timeout
         res.json([]);
     }
 });
