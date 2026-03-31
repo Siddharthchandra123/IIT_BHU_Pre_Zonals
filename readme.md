@@ -23,72 +23,58 @@ Healthcare access in rural and semi-urban areas faces several challenges:
 ## 🚀 Key Features
 
 ### 🤖 AI Symptom Analysis
-- Accepts patient symptoms via chat or form
-- Uses NLP to interpret symptoms
-- Suggests possible conditions with risk levels
+- Accepts patient symptoms via chat or form.
+- Uses a **Random Forest Classifier** trained on extensive disease-symptom datasets.
+- Provides a probability-based confidence score for each prediction.
 
 ### 📚 Medical Knowledge RAG System
-- Retrieves verified medical information
-- Reduces hallucination using context-based retrieval
-- Provides explainable responses
+- **Retrieval-Augmented Generation (RAG)**: Combines pre-trained models with a custom medical knowledge base.
+- **FAISS Vector Database**: Enables lightning-fast similarity searches across thousands of medical Q&A pairs (MedQuad dataset).
+- **Sentence Transformers**: Uses `all-MiniLM-L6-v2` to create high-dimensional semantic embeddings for precise matching.
+- **Reduced Hallucinations**: Direct evidence-based retrieval ensures answers are grounded in verified medical text.
 
-### ⚠️ Risk Prediction Models
-- ML models assess severity & urgency
-- Early warning for critical conditions
+### ⚠️ Risk Prediction & Severity
+- ML models assess symptom severity and urgency.
+- **High-Risk Detection**: Automatically flags critical symptoms (e.g., chest pain, difficulty breathing) for immediate emergency alerts.
 
 ### 🏥 Nearest Hospital Connectivity
-- Finds nearby hospitals & healthcare centers
-- Enables quick referrals during emergencies
+- Finds nearby hospitals & healthcare centers.
+- Enables quick referrals and location-based triage during emergencies.
 
 ### 🌐 Multilingual & Rural-Friendly Interface
-- Designed for low-literacy & regional language use
-- Simple and accessible UI
+- **Google Translator Integration**: Real-time translation between English and regional languages.
+- Simple, accessible UI designed for ease of use in low-resource settings.
 
 ---
 
 ## 🧠 AI & ML Components
 
 ### Models Used
-- **Random Forest Classifier** — risk prediction & classification
-- **Transformer-based NLP Models** — symptom understanding
-- **Sentence Transformers** — semantic similarity search
-- **FAISS Vector Database** — fast medical knowledge retrieval
+- **Random Forest Classifier** — Core disease prediction engine.
+- **Sentence Transformers (`all-MiniLM-L6-v2`)** — For semantic similarity in the RAG pipeline.
+- **FAISS (Facebook AI Similarity Search)** — Vector indexing and retrieval engine.
 
 ---
 
 ## 🏗️ System Architecture
 
-### 🔹 Frontend
-- HTML, CSS, JavaScript
-- EJS templating
-- Responsive & lightweight design
+### 🔹 Frontend (EJS/Node.js)
+- **Express Server**: Handles routing, UI rendering, and proxying requests to the AI service.
+- **EJS Templating**: dynamic page rendering for a seamless user experience.
 
-### 🔹 Backend
-- Node.js / Express (UI & routing)
-- Python FastAPI services (AI inference)
-
-### 🔹 AI Layer
-- NLP pipeline for symptom parsing
-- RAG pipeline for medical knowledge retrieval
-- ML model inference engine
-
-### 🔹 Data Layer
-- FAISS vector store
-- Medical datasets & guidelines
-- Patient interaction logs (anonymized)
+### 🔹 Backend (Python/Flask)
+- **Flask API**: Acts as the bridge between the frontend and the AI models.
+- **Inference Service**: Runs the ML models and FAISS search in real-time.
 
 ---
 
 ## 🔄 Workflow
-1. User inputs symptoms
-2. NLP engine interprets symptoms
-3. Vector search retrieves relevant medical context
-4. ML model assesses risk level
-5. System returns:
-   - possible conditions
-   - severity level
-   - recommended next steps
-   - nearby hospitals (if needed)
+1. **User Input**: Patient describes symptoms in their preferred language.
+2. **Translation**: If non-English, query is translated to English for processing.
+3. **Symptom Parsing**: NLP engine identifies key symptoms.
+4. **Vector Search (RAG)**: FAISS retrieves the most relevant medical guidance from the database.
+5. **ML Prediction**: Random Forest model calculates the most likely condition.
+6. **Output**: The system displays Possible Conditions, care advice, emergency alerts, and translates it back to the user's language.
 
 ---
 
@@ -96,86 +82,61 @@ Healthcare access in rural and semi-urban areas faces several challenges:
 
 | Layer | Technology |
 |------|-----------|
-| Frontend | HTML, CSS, JavaScript, EJS |
-| Backend | Node.js, Express |
-| AI Services | Python, FastAPI |
-| ML Libraries | scikit-learn, transformers |
-| Embeddings | Sentence Transformers |
-| Vector DB | FAISS |
-| Data Handling | Pandas, NumPy |
+| **Frontend** | HTML5, CSS3 (Vanilla), JavaScript, EJS |
+| **Backend** | Node.js, Express |
+| **AI Services** | Python 3.x, Flask, Flask-CORS |
+| **ML Libraries** | scikit-learn, joblib |
+| **RAG Pipeline** | FAISS, Sentence Transformers, Transformers |
+| **Translation** | deep-translator (Google Translator API) |
+| **Data Handling** | Pandas, NumPy |
+
+---
+
+## ⚙️ Installation & Setup (Local Development)
+
+### 1️⃣ Clone Repository
+```bash
+git clone https://github.com/Siddharthchandra123/IIT_BHU_Pre_Zonals.git
+cd IIT_BHU_Pre_Zonals
+```
+
+### 2️⃣ Navigate to Project Folder
+```bash
+cd local_host
+```
+
+### 3️⃣ AI Service Setup (Python)
+Ensure you have Python installed. It is recommended to use a virtual environment.
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the AI Backend
+python API.py
+```
+
+### 4️⃣ Server Setup (Node.js)
+Open a new terminal window:
+```bash
+cd local_host
+
+# Install dependencies
+npm install
+
+# Start the Frontend Server
+npm start
+```
+
+### 5️⃣ Open in Browser
+Visit [http://localhost:3000](http://localhost:3000)
 
 ---
 
 ## 🛡️ Safety & Reliability
 
-- Uses verified medical knowledge sources
-- Risk-level classification instead of definitive diagnosis
-- Encourages professional consultation
-- Designed to minimize AI hallucinations via RAG
-
----
-
-## 📈 Use Cases
-
-- Rural telehealth assistance
-- Primary health screening
-- Emergency triage support
-- Community health workers support tool
-- Health awareness & early detection
-
----
-
-## 🔮 Future Enhancements
-
-- Integration with government health systems
-- Offline functionality for low-connectivity areas
-- Wearable & IoT health monitoring integration
-- Voice-based interaction
-- Doctor teleconsultation module
-
----
-
-## ⚙️ Installation & Setup
-
-### 1️⃣ Clone Repository
-```bash
-git clone https://github.com/yourusername/chikitsalya.git
-cd chikitsalya
-```
-
-### 2️⃣ Backend Setup
-```bash
-cd backend
-npm install
-npm start
-```
-
-### 3️⃣ AI Service Setup
-```bash
-cd ai-service
-pip install -r requirements.txt
-python app.py
-```
-
-### 4️⃣ Open in Browser
-```
-http://localhost:3000
-```
-
----
-
-## 🤝 Contribution
-Contributions are welcome!
-
-1. Fork the repository
-2. Create a new branch
-3. Commit changes
-4. Submit a pull request
-
----
-
-## ⚠️ Disclaimer
-Chikitsalya is a **clinical decision support tool** and not a replacement for professional medical advice, diagnosis, or treatment.
+- **Clinical Decision Support**: Designed as a tool for health workers and patients, not a final diagnostic authority.
+- **Emergency Protocols**: Hardcoded high-severity triggers for life-threatening symptoms.
+- **Verified Data**: Uses the MedQuad dataset for grounding knowledge.
 
 ---
 
@@ -184,4 +145,5 @@ Chikitsalya is a **clinical decision support tool** and not a replacement for pr
 
 ---
 
-## ⭐ If you find this pr
+## ⭐ Support
+If you find this project useful, please consider giving it a ⭐ on GitHub!

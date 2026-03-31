@@ -20,11 +20,11 @@ export default function App() {
 
       try {
         // 2. Fetch Location with a 6-second timeout to prevent hanging
-        const locationPromise = Location.getCurrentPositionAsync({ 
-          accuracy: Location.Accuracy.Balanced 
+        const locationPromise = Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced
         });
-        
-        const timeoutPromise = new Promise((_, reject) => 
+
+        const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('GPS Timeout')), 6000)
         );
 
@@ -32,7 +32,7 @@ export default function App() {
         const loc = await Promise.race([locationPromise, timeoutPromise])
           .catch((err) => {
             console.log("GPS search timed out or failed, loading site without pre-fill.");
-            return null; 
+            return null;
           });
 
         if (loc) {
