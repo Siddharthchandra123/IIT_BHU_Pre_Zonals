@@ -80,16 +80,21 @@ app.post('/ask', async (req, res) => {
     }
 });
 
-// ----------- HOSPITAL & PHARMACY ROUTES ----------- //
+// ----------- API ROUTES ----------- //
 const hospitalRoutes = require('./routes/hospital');
-const pharmacyRoutes = require('./routes/pharmacy'); // New Indian Radar logic
+const pharmacyRoutes = require('./routes/pharmacy');
+const opdRoutes = require('./routes/opd');
+const patientRoutes = require('./routes/patient');
 
 app.use('/api', hospitalRoutes);
 app.use('/api', pharmacyRoutes);
+app.use('/api/opd', opdRoutes);
+app.use('/api/patient', patientRoutes);
 
 // View routes
 app.get('/hospitals', (req, res) => { res.render('hospital'); });
 app.get('/pharmacies', (req, res) => { res.render('pharmacy'); });
+app.get('/opd', (req, res) => { res.render('opd'); });
 
 // NEW: Data Feed Integration - allows "feeding" local shops in production
 app.post('/api/add-pharmacy', (req, res) => {

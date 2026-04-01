@@ -63,10 +63,13 @@ router.get('/pharmacies', async (req, res) => {
 
         res.json(allResults);
 
+
     } catch (err) {
         console.error("Overpass API Pharmacy Error:", err.message);
         res.status(500).json({ error: "Failed to connect to satellite radar. Please try again." });
     }
 });
 
+
 module.exports = router;
+

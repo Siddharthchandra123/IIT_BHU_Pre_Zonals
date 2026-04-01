@@ -16,6 +16,7 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/ambulance', (req, res) => { res.render('ambulance'); });
+app.get('/opd', (req, res) => { res.render('opd'); });
 
 app.post('/ask', async (req, res) => {
     try {
@@ -36,11 +37,16 @@ app.post('/ask', async (req, res) => {
 
 const hospitalRoutes = require('./routes/hospital');
 const pharmacyRoutes = require('./routes/pharmacy');
+const opdRoutes = require('./routes/opd');
+const patientRoutes = require('./routes/patient');
 
+// API Routes
 app.use('/api', hospitalRoutes);
 app.use('/api', pharmacyRoutes);
+app.use('/api/opd', opdRoutes);
+app.use('/api/patient', patientRoutes);
 
-app.get('/hospitals', (req, res) => { res.render('hospital'); });
+const PORT = 3000;
 const fs = require('fs');
 const path = require('path');
 

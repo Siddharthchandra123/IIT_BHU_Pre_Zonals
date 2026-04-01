@@ -25,15 +25,8 @@
         }
 
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(2deg);
-            }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
         }
 
         .bot-eye {
@@ -48,17 +41,8 @@
         }
 
         @keyframes pulse-core {
-
-            0%,
-            100% {
-                opacity: 0.6;
-                filter: blur(5px);
-            }
-
-            50% {
-                opacity: 1;
-                filter: blur(15px);
-            }
+            0%, 100% { opacity: 0.6; filter: blur(5px); }
+            50% { opacity: 1; filter: blur(15px); }
         }
 
         /* --- Premium God-Level Enhancements --- */
@@ -201,15 +185,8 @@
                 flex-direction: column-reverse;
                 text-align: center;
             }
-
-            .hero-title {
-                font-size: 3.5rem;
-            }
-
-            .bot-container {
-                width: 300px;
-                height: 300px;
-            }
+            .hero-title { font-size: 3.5rem; }
+            .bot-container { width: 300px; height: 300px; }
         }
     </style>
 </head>
@@ -223,19 +200,19 @@
         </a>
         <nav class="nav-links">
             <a href="/">Home</a>
-            <a href="/home">Assistant</a>
+            <a href="/home">AI Assistant</a>
+            <a href="/opd">OPD Booking</a>
             <a href="/ambulance">Ambulance</a>
             <a href="/hospitals">Find Hospitals</a>
             <a href="/pharmacies">Medical Shops</a>
-            <a href="#emergency" style="color: #fca5a5; font-weight: 700;">Emergency</a>
+            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;">Emergency</a>
         </nav>
     </header>
 
     <main class="main-wrapper">
         <section class="hero-section">
             <div class="hero-content reveal">
-                <div
-                    style="display: inline-block; padding: 8px 20px; background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 99px; color: var(--primary-accent); font-weight: 700; font-size: 0.85rem; margin-bottom: 25px;">
+                <div style="display: inline-block; padding: 8px 20px; background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 99px; color: var(--primary-accent); font-weight: 700; font-size: 0.85rem; margin-bottom: 25px;">
                     ✨ THE FUTURE OF MEDICINE
                 </div>
                 <h1 class="hero-title">
@@ -243,8 +220,7 @@
                     <span class="heading-gradient">AI Health Care</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Experience state-of-the-art medical intelligence. Analyze symptoms, get real-time health advice, and
-                    connect with top specialists instantly.
+                    Experience state-of-the-art medical intelligence. Analyze symptoms, get real-time health advice, and connect with top specialists instantly.
                 </p>
                 <div style="display: flex; gap: 20px;">
                     <a href="/home" class="btn-glow" style="padding: 18px 40px; font-size: 1.2rem;">
@@ -257,26 +233,23 @@
                 <div class="bot-container">
                     <svg class="neural-bot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                         <!-- Bot Body -->
-                        <path d="M40 100 Q40 40 100 40 Q160 40 160 100 Q160 160 100 160 Q40 160 40 100"
-                            fill="rgba(30, 41, 59, 0.9)" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+                        <path d="M40 100 Q40 40 100 40 Q160 40 160 100 Q160 160 100 160 Q40 160 40 100" fill="rgba(30, 41, 59, 0.9)" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
                         <!-- Glowing Core -->
-                        <circle cx="100" cy="100" r="15" class="bot-core" fill="#0ea5e9" />
+                        <circle cx="100" cy="100" r="15" class="bot-core" fill="#0ea5e9"/>
                         <!-- Arm/Supports -->
-                        <path d="M40 100 L20 120" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" />
-                        <path d="M160 100 L180 120" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" />
+                        <path d="M40 100 L20 120" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M160 100 L180 120" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
                         <!-- Animated Head Group -->
                         <g id="botHead">
-                            <rect x="70" y="60" width="60" height="40" rx="15" fill="rgba(15, 23, 42, 1)"
-                                stroke="#0ea5e9" stroke-width="2" />
+                            <rect x="70" y="60" width="60" height="40" rx="15" fill="rgba(15, 23, 42, 1)" stroke="#0ea5e9" stroke-width="2"/>
                             <!-- Eyes Container -->
                             <g id="botEyes">
-                                <circle cx="85" cy="80" r="4" class="bot-eye" />
-                                <circle cx="115" cy="80" r="4" class="bot-eye" />
+                                <circle cx="85" cy="80" r="4" class="bot-eye"/>
+                                <circle cx="115" cy="80" r="4" class="bot-eye"/>
                             </g>
                         </g>
                         <!-- Floating Rings -->
-                        <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(14, 165, 233, 0.1)" stroke-width="1"
-                            stroke-dasharray="10 5" />
+                        <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(14, 165, 233, 0.1)" stroke-width="1" stroke-dasharray="10 5"/>
                     </svg>
                 </div>
             </div>
@@ -294,6 +267,15 @@
             </div>
 
             <div class="feature-card reveal" style="transition-delay: 0.1s;">
+                <span class="feature-icon">📅</span>
+                <h3>Smart OPD</h3>
+                <p>Skip the physical queues. Book your consultation token online and get real-time queue updates.</p>
+                <a href="/opd" class="btn-glow" style="margin-top: 15px; padding: 8px 20px; font-size: 0.9rem; background: rgba(14, 165, 233, 0.1); border: 1px solid var(--primary-accent); color: var(--primary-accent);">
+                    Book Token →
+                </a>
+            </div>
+
+            <div class="feature-card reveal" style="transition-delay: 0.2s;">
                 <span class="feature-icon">📍</span>
                 <h3>Instant Radar</h3>
                 <p>Find the nearest pharmacies and hospitals with our 50km Ultra-Scan ultra-wide radar.</p>
@@ -303,13 +285,11 @@
                 </ul>
             </div>
 
-            <div id="emergency" class="feature-card reveal"
-                style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); transition-delay: 0.2s;">
+            <div id="emergency" class="feature-card reveal" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); transition-delay: 0.2s;">
                 <span class="feature-icon" style="filter: drop-shadow(0 0 10px #ef4444);">🚨</span>
                 <h3 style="color: #fca5a5;">Critical Response</h3>
                 <p>Immediate access to emergency services with one-tap ambulance dispatching.</p>
-                <a href="tel:108" class="btn-glow"
-                    style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-top: 25px; padding: 12px 30px;">
+                <a href="tel:108" class="btn-glow" style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-top: 25px; padding: 12px 30px;">
                     Dispatch Ambulance (108)
                 </a>
             </div>
@@ -318,15 +298,13 @@
         <!-- New Roadmap Section -->
         <section class="roadmap-section reveal">
             <h2 class="heading-gradient" style="font-size: 3rem; margin-bottom: 50px;">Future Roadmap</h2>
-            <div
-                style="max-width: 800px; margin: 0 auto; text-align: left; position: relative; padding-left: 40px; border-left: 2px solid rgba(255,255,255,0.1);">
-
+            <div style="max-width: 800px; margin: 0 auto; text-align: left; position: relative; padding-left: 40px; border-left: 2px solid rgba(255,255,255,0.1);">
+                
                 <div class="roadmap-item reveal">
                     <div class="roadmap-icon">🧬</div>
                     <div>
                         <h4 style="color: #fff;">Q2 2026: DNA Risk Prediction</h4>
-                        <p style="color: var(--text-muted);">Integrating genomic datasets for advanced preventive
-                            healthcare.</p>
+                        <p style="color: var(--text-muted);">Integrating genomic datasets for advanced preventive healthcare.</p>
                     </div>
                 </div>
 
@@ -342,8 +320,7 @@
                     <div class="roadmap-icon">🛰️</div>
                     <div>
                         <h4 style="color: #fff;">Q4 2026: Satellite Telemedicine</h4>
-                        <p style="color: var(--text-muted);">Low-latency video consultations in extremely rural areas.
-                        </p>
+                        <p style="color: var(--text-muted);">Low-latency video consultations in extremely rural areas.</p>
                     </div>
                 </div>
 
@@ -418,10 +395,10 @@
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 15;
             const y = (e.clientY / window.innerHeight - 0.5) * 15;
-
+            
             // Subtle head tilt
             botHead.style.transform = `translate(${x}px, ${y}px)`;
-
+            
             // Pupil tracking (more extreme movement)
             const ex = (e.clientX / window.innerWidth - 0.5) * 8;
             const ey = (e.clientY / window.innerHeight - 0.5) * 8;

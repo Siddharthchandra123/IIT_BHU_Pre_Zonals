@@ -1,177 +1,318 @@
 import pandas as pd
+import faiss
 import numpy as np
-import joblib
-import os
+from sentence_transformers import SentenceTransformer
 
-# Lazy-loaded globals
-symptoms_df = None
-desc_df = None
-prec_df = None
-train_df = None
-qa_df = None
-answers = None
-model_ml = None
-feature_columns = None
-tfidf_vectorizer = None
-tfidf_matrix = None
+USE_SUMMARIZER = False
+symptoms_df = pd.read_csv("dataset.csv")
+desc_df = pd.read_csv("symptom_Description.csv")
+prec_df = pd.read_csv("symptom_precaution.csv")
+train_df = pd.read_csv("Training.csv")
+qa_df = pd.read_csv("medquad_qa.csv")
+test_df=pd.read_csv("Testing.csv")
+severity_df = pd.read_csv("Symptom-severity.csv")
 
-data_loaded = False
+X = train_df.drop("prognosis", axis=1)
+y = train_df["prognosis"]
+from sklearn.ensemble import RandomForestClassifier
+
+model_ml = RandomForestClassifier()
+model_ml.fit(X, y)
+def predict_disease_ml(symptoms_list):
+    input_data = pd.DataFrame(
+        [[1 if col in symptoms_list else 0 for col in X.columns]],
+        columns=X.columns
+    )
+    return model_ml.predict(input_data)[0]
 
 
-def load_resources():
-    global symptoms_df, desc_df, prec_df, train_df, qa_df
-    global model_ml, feature_columns, tfidf_vectorizer, tfidf_matrix, answers, data_loaded
+X_test = test_df.drop("prognosis", axis=1)
+y_test = test_df["prognosis"]
 
-    if data_loaded:
-        return
+X_test = X_test.reindex(columns=X.columns, fill_value=0)
 
-    print("🔥 Loading base AI datasets...")
+accuracy = model_ml.score(X_test, y_test)
 
-    # Load datasets
-    symptoms_df = pd.read_csv("dataset.csv")
-    desc_df = pd.read_csv("symptom_Description.csv")
-    prec_df = pd.read_csv("symptom_precaution.csv")
-    train_df = pd.read_csv("Training.csv")
-    qa_df = pd.read_csv("medquad_qa.csv")
-    
-    questions = qa_df["Question"].astype(str).tolist()
-    answers = qa_df["Answer"].tolist()
+print("Accuracy:", accuracy)
 
-    # 🚀 The Ultimate Fix: Train ML Model Dynamically 
-    # Pickling a model on Windows and unpickling on Linux can cause C-level Segfaults (502 Bad Gateway).
-    # Since the dataset is tiny, we just train it natively in 1 second!
-    print("🧠 Dynamically Training ML Model to prevent OS-level Segfaults...")
-    from sklearn.ensemble import RandomForestClassifier
-    
-    X = train_df.drop("prognosis", axis=1)
-    y = train_df["prognosis"]
-    
-    model_ml = RandomForestClassifier(n_estimators=100, n_jobs=1)
-    model_ml.fit(X, y)
-    feature_columns = X.columns.tolist()
 
-    print("⚡ Instant-Boot: Compiling TF-IDF Search Engine...")
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    
-    vec = TfidfVectorizer(stop_words='english', max_features=10000)
-    mat = vec.fit_transform(questions)
+print("Accuracy:", accuracy)
 
-    # assign to globals
-    globals()['tfidf_vectorizer'] = vec
-    globals()['tfidf_matrix'] = mat
+if USE_SUMMARIZER:
+    try:
+        from transformers import pipeline
+        summarizer = pipeline(
+            "summarization",
+            model="sshleifer/distilbart-cnn-12-6"  # lighter & faster
+        )
+        print("Summarizer loaded")
+    except:
+        summarizer = None
+        print("Summarizer not available, using simple shortening")
+else:
+    summarizer = None
 
-    data_loaded = True
-    print("✅ All resources loaded! Server is 100% invincible!")
 
-# ---------------- UTIL FUNCTIONS ---------------- #
+def simplify_answer(text):
+
+    text = text[:1200]
+
+    if summarizer:
+        try:
+            summary = summarizer(
+                text,
+                max_length=60,
+                min_length=20,
+                do_sample=False
+            )[0]['summary_text']
+            return summary
+        except:
+            pass
+
+    sentences = text.split(". ")
+    return ". ".join(sentences[:3])
+
+
+def format_output(text):
+    parts = text.split(". ")
+    bullets = "\n".join(["• " + p.strip() for p in parts if len(p) > 5])
+    return bullets
+
+
+def emergency_check(text):
+    danger_words = [
+        "chest pain",
+        "difficulty breathing",
+        "unconscious",
+        "bleeding",
+        "severe pain"
+    ]
+    for word in danger_words:
+        if word in text.lower():
+            return "\n🚨 EMERGENCY: Seek immediate medical help."
+    return ""
+
+
+df = pd.read_csv("medquad_qa.csv")
+
+questions = df["Question"].tolist()
+answers = df["Answer"].tolist()
+
+print("Loading AI model...")
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+print("Creating embeddings...")
+embeddings = model.encode(questions, show_progress_bar=True)
+embeddings = np.array(embeddings)
+
+dimension = embeddings.shape[1]
+index = faiss.IndexFlatL2(dimension)
+index.add(embeddings)
+
+print("Medical AI ready!")
+
+def normalize_for_ml(text):
+    return text.replace(" ", "_")
 
 def normalize_input(text):
     text = text.lower()
-    fixes = {
+
+    replacements = {
         "bodypain": "body pain",
         "vommit": "vomiting",
-        "weak": "weakness",
-        "blurred vision": "blurry vision"
+        "blurred vision": "blurry vision",
+        "weak": "weakness"
     }
-    for k, v in fixes.items():
+
+    for k, v in replacements.items():
         text = text.replace(k, v)
+
     return text
 
+def ask(user_input):
 
-def simplify(text):
-    return " ".join(text.split(". ")[:3])
+    ml_text = normalize_for_ml(user_input)
 
-
-def get_disease_info(disease):
-    desc = desc_df[desc_df["Disease"] == disease]["Description"]
-    desc = desc.values[0] if len(desc) else None
-
-    prec = prec_df[prec_df["Disease"] == disease]
-    precautions = prec.iloc[0, 1:].dropna().tolist() if not prec.empty else []
-
-    return desc, precautions
-
-
-def predict_rule(symptoms):
-    best, score = None, 0
-    stop_words = {"hi", "hello", "how", "are", "you", "i", "am", "my", "is", "the", "a", "an"}
-
-    filtered = [s for s in symptoms if s not in stop_words and len(s) > 2]
-    if not filtered:
-        return None
-
-    for _, row in symptoms_df.iterrows():
-        text = " ".join(row.dropna().astype(str)).lower()
-        matches = sum(1 for s in filtered if f" {s} " in f" {text} ")
-
-        if matches > score:
-            score = matches
-            best = row["Disease"]
-
-    return best if score > 0 else None
-
-
-def predict_ml(user_input):
-    ml_text = user_input.replace(" ", "_")
     input_df = pd.DataFrame(
-        [[1 if col in ml_text else 0 for col in feature_columns]],
-        columns=feature_columns
+        [[1 if col in ml_text else 0 for col in X.columns]],
+        columns=X.columns
     )
 
-    probs = model_ml.predict_proba(input_df)[0]
-    return model_ml.predict(input_df)[0] if max(probs) > 0.65 else None
-
-
-def rag_answer(query):
-    from sklearn.metrics.pairwise import cosine_similarity
-    
-    query_vec = tfidf_vectorizer.transform([query])
-    similarities = cosine_similarity(query_vec, tfidf_matrix).flatten()
-    
-    # Get top 2 best-matching indices
-    top_indices = similarities.argsort()[-2:][::-1]
-    
-    valid = []
-    for i in top_indices:
-        if similarities[i] > 0.15: # TF-IDF needs lower threshold
-            valid.append(answers[i])
-            
-    if not valid:
-        return "I don't have enough specific medical information to answer that safely. Please consult a doctor."
-
-    return simplify(" ".join(valid))
-
-
-# ---------------- MAIN FUNCTION ---------------- #
-
-def ask(user_input):
-    load_resources()   # 🔥 critical
-
     user_input = normalize_input(user_input)
-    symptoms = user_input.split()
+    query_vector = model.encode([user_input])
 
-    disease_rule = predict_rule(symptoms)
-    disease_ml = predict_ml(user_input)
-    ai_text = rag_answer(user_input)
+    distances, indices = index.search(query_vector, k=5)
 
-    response = ""
+    ai_responses = []
+
+    for dist, idx in zip(distances[0], indices[0]):
+        text = answers[idx].lower()
+
+        if dist < 1.0 and any(sym in text for sym in user_input.split()):
+            ai_responses.append(simplify_answer(answers[idx]))
+
+    if not ai_responses:
+        ai_text = "I do not have enough specific medical information to answer this safely."
+    else:
+        ai_text = " ".join(ai_responses[:2])
+
+
+    probs = model_ml.predict_proba(input_df)[0]
+    confidence = max(probs)
+
+    if confidence < 0.65:
+        disease_ml = "Unknown (Confidence too low)"
+    else:
+        disease_ml = model_ml.predict(input_df)[0]
+
+    disease_rule = predict_disease(user_input)
+
+    response = "\n"
 
     if disease_rule:
-        desc, precautions = get_disease_info(disease_rule)
+        desc = get_description(disease_rule)
+        precautions = get_precautions(disease_rule)
+        risk = check_risk(user_input)
 
-        response += f"\n🩺 POSSIBLE CONDITION: {disease_rule}\n"
+        response += f"\n🩺 Possible Condition: {disease_rule}\n"
 
         if desc:
-            response += f"\nℹ️ ABOUT: {simplify(desc)}\n"
+            response += f"\nAbout:\n{simplify_answer(desc)}\n"
 
         if precautions:
-            response += "\n🏥 CARE ADVICE:\n"
-            for p in precautions[:4]:
+            response += "\nCare Advice:\n"
+            for p in precautions:
                 response += f"• {p}\n"
 
-    response += f"\n🧠 AI GUIDANCE:\n{ai_text}\n"
+        if risk:
+            response += "\n⚠️ High-risk symptoms detected. Consider seeing a doctor.\n"
 
-    if any(x in user_input for x in ["chest pain", "breathing", "bleeding"]):
-        response += "\n🚨 EMERGENCY: Seek medical help immediately."
+    response += "\nAdditional Guidance:\n"
+    response += format_output(ai_text)
+
+    response += symptom_check(user_input)
+    response += emergency_check(user_input)
+    response += care_advice()
+
+    response += f"\n🧠 ML Prediction: {disease_ml}"
+    response += f"\n📚 Dataset Match: {disease_rule}"
+
+    if disease_ml == disease_rule:
+        response += "\nHigh confidence prediction"
+    else:
+        response += "\nPredictions differ - consult a doctor"
 
     return response
+
+def get_precautions(disease):
+    result = prec_df[prec_df["Disease"] == disease]
+
+    if not result.empty:
+        precautions = result.iloc[0, 1:].dropna().tolist()
+        return precautions
+
+    return []
+
+def symptom_check(text):
+    symptoms = text.lower()
+
+    if "pale" in symptoms and "weakness" in symptoms:
+        return "\n⚠️ Could indicate anemia or dehydration."
+
+    if "fever" in symptoms and "vomit" in symptoms:
+        return "\n⚠️ May be viral infection, food poisoning, or dengue."
+
+    if "nausea" in symptoms and "weakness" in symptoms:
+        return "\n⚠️ Could be dehydration or infection."
+
+    return ""
+def predict_disease(user_input):
+    user_symptoms = user_input.lower().split()
+    
+    stop_words = {"hi", "hello", "how", "are", "you", "whats", "up", "buddy", "i", "am", "my", "is", "the", "a", "an"}
+    filtered_symptoms = [s for s in user_symptoms if s not in stop_words and len(s) > 2]
+
+    if not filtered_symptoms:
+        return None
+
+    best_match = None
+    max_matches = 0
+
+    for _, row in symptoms_df.iterrows():
+        row_symptoms = " ".join(row.dropna().astype(str)).lower()
+        
+        matches = sum(1 for sym in filtered_symptoms if f" {sym} " in f" {row_symptoms} ")
+
+        if matches > max_matches:
+            max_matches = matches
+            best_match = row["Disease"]
+
+    if max_matches > 0:
+        return best_match
+    return None
+
+def get_description(disease):
+    result = desc_df[desc_df["Disease"] == disease]
+    if not result.empty:
+        return result["Description"].values[0]
+def check_risk(user_input):
+    text = user_input.lower()
+    high_risk = []
+
+    for _, row in severity_df.iterrows():
+        symptom = row["Symptom"].lower()
+        severity = row["weight"]
+
+        if symptom in text and severity > 5:
+            high_risk.append(symptom)
+
+    return high_risk
+def health_assistant(user_input):
+
+    disease = predict_disease(user_input)
+
+    if not disease:
+        return "Unable to determine condition."
+
+    desc = get_description(disease)
+    precautions = get_precautions(disease)
+    risk = check_risk(user_input)
+
+    response = f"\nPossible Condition: {disease}\n"
+
+    response += f"\nAbout:\n{desc}\n"
+
+    response += "\nCare Advice:\n"
+    for p in precautions:
+        response += f"• {p}\n"
+
+    if risk:
+        response += "\n⚠️ High-risk symptoms detected. Consider seeing a doctor.\n"
+
+    return response
+
+def care_advice():
+    return "\n\n👉 Drink ORS or fluids\n👉 Rest well\n👉 See doctor if symptoms last > 2 days"
+
+
+def save_model():
+    import joblib
+    import faiss
+
+    joblib.dump(model_ml, "disease_model.pkl")
+
+    joblib.dump(X.columns.tolist(), "feature_columns.pkl")
+
+    faiss.write_index(index, "rag_index.faiss")
+
+    print("Models saved!")
+
+if __name__ == "__main__":
+    while True:
+        q = input("\nAsk health question (or type exit): ")
+        if q.lower() == "exit":
+            break
+
+        print("\nAI Doctor:\n", ask(q))
+    
+    save_model()

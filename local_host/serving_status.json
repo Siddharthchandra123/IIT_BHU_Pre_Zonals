@@ -1,0 +1,22 @@
+{
+  "General Medicine": {
+    "doctor": "Dr. Sharma",
+    "current": "TK-1001",
+    "lastCalled": "2026-04-01T13:47:05.204Z"
+  },
+  "Cardiology": {
+    "doctor": "Dr. Verma",
+    "current": "TK-1001",
+    "lastCalled": "2026-04-01T13:35:00Z"
+  },
+  "Neurology": {
+    "doctor": "Dr. Reddy",
+    "current": "TK-1002",
+    "lastCalled": "2026-04-01T13:40:00Z"
+  },
+  "Pediatrics": {
+    "doctor": "Dr. Gupta",
+    "current": "TK-0",
+    "lastCalled": null
+  }
+}

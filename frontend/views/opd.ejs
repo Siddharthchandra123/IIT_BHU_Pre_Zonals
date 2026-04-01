@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPD Booking | AI Chitikshalaya</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .opd-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 900px) {
+            .opd-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .booking-card {
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-card::after {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .status-card {
+            padding: 30px;
+            height: fit-content;
+        }
+
+        .department-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .token-result {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid var(--primary-glow);
+            border-radius: 20px;
+            animation: fadeInUp 0.5s ease;
+            text-align: center;
+        }
+
+        .token-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-glow);
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+            margin: 15px 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .booking-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .booking-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-smooth);
+        }
+
+        .booking-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .tag-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 99px;
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .demo-btn {
+            background: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Patient Side Wizard & Live Dashboard Styles */
+        .auth-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .wizard-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .select-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .select-card:hover {
+            border-color: var(--primary-glow);
+            background: rgba(14, 165, 233, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .select-card.selected {
+            border-color: var(--primary-glow);
+            background: rgba(14, 165, 233, 0.2);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+        }
+
+        .live-stat-badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            flex: 1;
+        }
+
+        .now-serving-big {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #4ade80;
+            margin: 10px 0;
+            font-family: 'Outfit', sans-serif;
+            text-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .notification-banner {
+            background: linear-gradient(90deg, rgba(234, 179, 8, 0.1), transparent);
+            border-left: 4px solid #eab308;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #ef4444;
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Auth Overlay (Mock) -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="glass-panel" style="padding: 40px; max-width: 400px; width: 90%; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 20px;">📱</div>
+            <h2 style="margin-bottom: 10px;">Patient Login</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">Enter your phone number to access the smart OPD portal.</p>
+            <input type="tel" id="loginPhone" class="glass-input" placeholder="e.g. 98765 43210" value="8826910452" style="margin-bottom: 20px; text-align: center;">
+            <button class="btn-glow" style="width: 100%;" onclick="mockLogin()">Login with OTP →</button>
+        </div>
+    </div>
+
+    <!-- Admin Control Panel (Demo Only) -->
+    <div class="admin-panel no-print">
+        <span style="font-size: 0.8rem; color: #ef4444; font-weight: 700;">DEMO ADMIN:</span>
+        <button class="demo-btn" style="margin: 0; background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.3);" onclick="simulateNextPatient()">
+            Call Next Patient →
+        </button>
+    </div>
+
+    <header class="navbar scrolled" id="navbar">
+        <a href="/" class="brand">
+            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> AI Chitikshalaya
+        </a>
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/home">AI Assistant</a>
+            <a href="/opd">OPD Booking</a>
+            <a href="/ambulance">Ambulance</a>
+            <a href="/hospitals">Find Hospitals</a>
+            <a href="/pharmacies">Medical Shops</a>
+            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;">Emergency</a>
+        </nav>
+    </header>
+
+    <main class="main-wrapper">
+        <div class="animate-fade-up">
+            <h1 class="hero-title" style="font-size: 3.5rem; margin-bottom: 10px;">Smart <span class="heading-gradient">OPD Booking</span></h1>
+            <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem;">Skip the queue. Book your medical consultation token instantly from the comfort of your home.</p>
+        </div>
+
+        <div class="opd-container">
+            <!-- Left: Booking Flow -->
+            <div class="glass-panel booking-card animate-fade-up" style="animation-delay: 0.1s;">
+                
+                <!-- Step 1: Hospital Selection -->
+                <div id="step1" class="wizard-step active">
+                    <h2 style="margin-bottom: 10px;">🏥 Select Hospital</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Choose the healthcare facility for your visit.</p>
+                    <div id="hospitalList" class="selection-grid">
+                        <!-- Populated by JS -->
+                        <div class="spinner" style="display: block; margin: 20px auto;"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Department Selection -->
+                <div id="step2" class="wizard-step">
+                    <button class="demo-btn" style="margin-bottom: 15px;" onclick="goToStep(1)">← Back</button>
+                    <h2 style="margin-bottom: 10px;">🩺 Select Department</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">What kind of specialist do you need?</p>
+                    <div id="deptList" class="selection-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Step 3: Doctor Selection -->
+                <div id="step3" class="wizard-step">
+                    <button class="demo-btn" style="margin-bottom: 15px;" onclick="goToStep(2)">← Back</button>
+                    <h2 style="margin-bottom: 10px;">👨‍⚕️ Choose Doctor</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Select from available specialists.</p>
+                    <div id="doctorList" class="selection-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Step 4: Finalize Booking -->
+                <div id="step4" class="wizard-step">
+                    <button class="demo-btn" style="margin-bottom: 15px;" onclick="goToStep(3)">← Back</button>
+                    <h2 style="margin-bottom: 20px;">📅 Confirm Appointment</h2>
+                    
+                    <div class="glass-panel" style="padding: 15px; margin-bottom: 25px; border-color: var(--primary-glow);">
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">SELECTED FACILITY:</div>
+                        <div id="summaryText" style="font-weight: 600; margin-top: 5px;">AIIMS - Cardiology (Dr. Sharma)</div>
+                    </div>
+
+                    <form id="bookingForm" onsubmit="handleBooking(event)">
+                        <div style="margin-bottom: 20px;">
+                            <label style="color: var(--text-muted); display: block; margin-bottom: 8px;">Patient Name</label>
+                            <input type="text" id="name" class="glass-input" placeholder="e.g. Rahul Sharma" required>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="color: var(--text-muted); display: block; margin-bottom: 8px;">Contact Number</label>
+                            <input type="tel" id="phone" class="glass-input" readonly>
+                        </div>
+
+                        <div style="margin-bottom: 30px;">
+                            <label style="color: var(--text-muted); display: block; margin-bottom: 8px;">Preferred Date</label>
+                            <input type="date" id="date" class="glass-input" required>
+                        </div>
+
+                        <button type="submit" class="btn-glow" style="width: 100%;">
+                            <span id="btnText">Generate Token →</span>
+                            <div id="btnLoader" class="spinner"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Step 5: Personal Live Status -->
+                <div id="tokenResult" class="token-result">
+                    <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted);">Booking Confirmed</div>
+                    <div id="tokenNumber" class="token-number">TK-2024</div>
+                    <div style="color: #fff; font-weight: 600; margin-bottom: 25px;" id="patientConfirmed">Patient Name</div>
+                    
+                    <!-- Real-time Stats -->
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                        <div class="live-stat-badge">
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Now Serving</div>
+                            <div id="liveServing" class="heading-gradient" style="font-size: 1.5rem; font-weight: 800;">TK-1004</div>
+                        </div>
+                        <div class="live-stat-badge">
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Your Position</div>
+                            <div id="livePosition" style="font-size: 1.5rem; font-weight: 800; color: #fff;">12</div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; margin-bottom: 25px;">
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Estimated Wait Time</div>
+                        <div id="liveWait" style="font-size: 1.2rem; font-weight: 700; color: #4ade80;">~ 25 Minutes</div>
+                    </div>
+
+                    <!-- Notification Banner -->
+                    <div id="notificationBanner" class="notification-banner">
+                        🔔 <strong>Token Approaching:</strong> Please be near the consultation room.
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
+                        <button id="payBtn" class="btn-glow" style="width: 100%; background: linear-gradient(135deg, #22c55e, #15803d);" onclick="openPaymentModal()">
+                            Pay Consultation Fee (₹500)
+                        </button>
+                        <button id="downloadReceiptBtn" class="btn-glow" style="width: 100%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: none;" onclick="printReceipt()">
+                            🖨️ Print Fee Receipt
+                        </button>
+                        <button class="badge-pill no-print" style="width: 100%; justify-content: center; padding: 12px;" onclick="resetForm()">
+                            Book Another Appointment
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Now Serving Live Display -->
+            <div class="glass-panel status-card animate-fade-up" style="animation-delay: 0.2s;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="margin-bottom: 10px; font-size: 1.5rem;">🟢 Now Serving</h2>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Real-time token status for AI Chitikshalaya</p>
+                    <div id="servingDisplay" class="now-serving-big">TK-1000</div>
+                    <div id="servingDoctor" style="font-size: 1.1rem; font-weight: 600; color: var(--primary-glow);">Dr. Sharma</div>
+                </div>
+
+                <div style="border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 15px;">Queue Timeline</h3>
+                    <div id="bookingList" class="booking-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Payment Modal -->
+    <div id="paymentModalOverlay" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="payment-modal" style="background: rgba(15, 23, 42, 0.95); border: 1px solid var(--glass-border); border-radius: 24px; width: 90%; max-width: 450px; padding: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <h2 style="margin-bottom: 10px;">Secure Payment</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem;">Complete your ₹500 consultation fee payment to confirm priority.</p>
+            
+            <div class="pay-option selected" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid var(--glass-border); border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease;">
+                <span style="font-size: 1.5rem;">📱</span>
+                <div>
+                    <div style="font-weight: 600;">UPI (Google Pay, PhonePe, Paytm)</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Instant activation</div>
+                </div>
+            </div>
+
+            <div class="pay-option" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid var(--glass-border); border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease;">
+                <span style="font-size: 1.5rem;">💳</span>
+                <div>
+                    <div style="font-weight: 600;">Credit / Debit Card</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Secure payment gateway</div>
+                </div>
+            </div>
+
+            <button class="btn-glow" style="width: 100%; margin-top: 20px;" onclick="processMockPayment()">
+                <span id="payActionText">Confirm Payment</span>
+                <div id="payLoader" class="spinner"></div>
+            </button>
+            <button style="width: 100%; margin-top: 15px; background: none; border: none; color: var(--text-muted); cursor: pointer;" onclick="closePaymentModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Hidden Receipt Template -->
+    <div id="receiptTemplate" class="receipt-card">
+        <div class="receipt-header">
+            <h1 style="font-size: 1.8rem; margin-bottom: 5px;">⚕️ AI CHITIKSHALAYA</h1>
+            <p style="font-size: 0.8rem; letter-spacing: 1px;">DIGITAL HEALTHCARE RECEIPT</p>
+        </div>
+        <div class="receipt-row">
+            <strong>Token Number:</strong>
+            <span id="rToken">--</span>
+        </div>
+        <div class="receipt-row">
+            <strong>Patient Name:</strong>
+            <span id="rName">--</span>
+        </div>
+        <div class="receipt-row">
+            <strong>Specialty:</strong>
+            <span id="rSpecialty">--</span>
+        </div>
+        <div class="receipt-row">
+            <strong>Appointment Date:</strong>
+            <span id="rDate">--</span>
+        </div>
+        <div class="receipt-row">
+            <strong>Transaction ID:</strong>
+            <span id="rTxn">TXN-000000</span>
+        </div>
+        <div style="border-top: 2px dashed #000; margin-top: 20px; padding-top: 20px;">
+            <div class="receipt-row" style="font-size: 1.2rem; font-weight: 800;">
+                <span>Total Paid:</span>
+                <span>₹ 500.00</span>
+            </div>
+        </div>
+        <p style="text-align: center; font-size: 0.75rem; margin-top: 30px; font-style: italic;">
+            Thank you for choosing AI Chitikshalaya. Please arrive 15 mins before your slot.
+        </p>
+    </div>
+
+    <script>
+        // State Management
+        let appState = {
+            user: null,
+            selectedHospital: null,
+            selectedDept: null,
+            selectedDoctor: null,
+            myToken: null,
+            intervalId: null
+        };
+
+        // --- Mock Auth ---
+        function mockLogin() {
+            const phone = document.getElementById('loginPhone').value;
+            if (phone.length < 10) return alert("Please enter a valid phone number.");
+            
+            appState.user = { phone: phone };
+            document.getElementById('authOverlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('authOverlay').style.display = 'none';
+                document.getElementById('phone').value = phone;
+                initWizard();
+            }, 500);
+        }
+
+        // --- Wizard Navigation ---
+        function goToStep(step) {
+            document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+
+        async function initWizard() {
+            // Load Hospitals
+            const res = await fetch('/api/patient/hospitals');
+            const hospitals = await res.json();
+            const list = document.getElementById('hospitalList');
+            list.innerHTML = hospitals.map(h => `
+                <div class="select-card" onclick="selectHospital('${h.id}', '${h.name}')">
+                    <div style="font-size: 1.5rem;">🏥</div>
+                    <div>
+                        <div style="font-weight: 600;">${h.name}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${h.location}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectHospital(id, name) {
+            appState.selectedHospital = { id, name };
+            loadDepartments();
+            goToStep(2);
+        }
+
+        async function loadDepartments() {
+            const res = await fetch('/api/patient/departments');
+            const depts = await res.json();
+            const list = document.getElementById('deptList');
+            list.innerHTML = depts.map(d => `
+                <div class="select-card" onclick="selectDept('${d}')">
+                    <div style="font-size: 1.5rem;">🩺</div>
+                    <div style="font-weight: 600;">${d}</div>
+                </div>
+            `).join('');
+        }
+
+        async function selectDept(dept) {
+            appState.selectedDept = dept;
+            const res = await fetch('/api/patient/doctors', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ dept })
+            });
+            const doctors = await res.json();
+            const list = document.getElementById('doctorList');
+            list.innerHTML = doctors.map(d => `
+                <div class="select-card" onclick="selectDoctor('${d.id}', '${d.name}')">
+                    <div style="font-size: 1.5rem;">👨‍⚕️</div>
+                    <div style="font-weight: 600;">${d.name}</div>
+                </div>
+            `).join('');
+            goToStep(3);
+        }
+
+        function selectDoctor(id, name) {
+            appState.selectedDoctor = { id, name };
+            document.getElementById('summaryText').innerText = 
+                `${appState.selectedHospital.name} - ${appState.selectedDept} (${name})`;
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('date').value = tomorrow.toISOString().split('T')[0];
+            
+            goToStep(4);
+        }
+
+        // --- Booking Logic ---
+        async function handleBooking(event) {
+            event.preventDefault();
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'block';
+
+            const payload = {
+                name: document.getElementById('name').value,
+                phone: appState.user.phone,
+                specialty: appState.selectedDept,
+                hospital: appState.selectedHospital.name,
+                doctor: appState.selectedDoctor.name,
+                date: document.getElementById('date').value
+            };
+
+            try {
+                const res = await fetch('/api/opd/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    setTimeout(() => {
+                        document.getElementById('step4').style.display = 'none';
+                        document.getElementById('tokenResult').style.display = 'block';
+                        document.getElementById('tokenNumber').innerText = data.token;
+                        document.getElementById('patientConfirmed').innerText = data.booking.name;
+                        
+                        appState.myToken = data.token;
+                        startLivePolling();
+                        fetchBookings();
+                    }, 800);
+                }
+            } catch (err) {
+                console.error(err);
+                btnText.style.display = 'block';
+                btnLoader.style.display = 'none';
+            }
+        }
+
+        // --- Live Status & Polling ---
+        function startLivePolling() {
+            if (appState.intervalId) clearInterval(appState.intervalId);
+            updateLiveStatus();
+            appState.intervalId = setInterval(updateLiveStatus, 5000);
+        }
+
+        async function updateLiveStatus() {
+            if (!appState.myToken) return;
+
+            try {
+                const res = await fetch(`/api/patient/status/${appState.myToken}`);
+                const data = await res.json();
+
+                document.getElementById('liveServing').innerText = data.nowServing;
+                document.getElementById('livePosition').innerText = data.position;
+                document.getElementById('liveWait').innerText = `~ ${data.waitTime} Minutes`;
+                
+                // Big serving display on right
+                document.getElementById('servingDisplay').innerText = data.nowServing;
+                document.getElementById('servingDoctor').innerText = data.doctor || "Consulting...";
+
+                // Notification logic
+                if (data.position <= 2 && data.position > 0) {
+                    document.getElementById('notificationBanner').style.display = 'block';
+                } else if (data.position === 0) {
+                    document.getElementById('notificationBanner').innerHTML = "✅ <strong>It's your turn!</strong> Please proceed to Room 102.";
+                    document.getElementById('notificationBanner').style.background = "rgba(34, 197, 94, 0.1)";
+                    document.getElementById('notificationBanner').style.borderColor = "#22c55e";
+                    document.getElementById('notificationBanner').style.display = 'block';
+                }
+                
+                fetchBookings();
+            } catch (err) {
+                console.error("Polling error:", err);
+            }
+        }
+
+        async function fetchBookings() {
+            const res = await fetch('/api/opd/list');
+            const data = await res.json();
+            const list = document.getElementById('bookingList');
+            
+            // Show only relevant bookings for current doctor/dept if possible
+            const filtered = data.filter(b => b.specialty === appState.selectedDept).slice(-5);
+            
+            list.innerHTML = filtered.reverse().map(b => `
+                <div class="booking-item">
+                    <div>
+                        <div style="font-weight: 600;">${b.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${b.id}</div>
+                    </div>
+                    <span class="tag-status" style="${b.status === 'Paid' ? 'background: rgba(34, 197, 94, 0.2); color: #4ade80;' : ''}">${b.status}</span>
+                </div>
+            `).join('');
+        }
+
+        // --- Demo Admin Simulation ---
+        async function simulateNextPatient() {
+            if (!appState.selectedDept) return alert("Select a department first to simulate its queue.");
+            
+            try {
+                const res = await fetch('/api/opd/admin/next', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ dept: appState.selectedDept })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    updateLiveStatus();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // --- Payment & Receipt ---
+        function openPaymentModal() {
+            document.getElementById('paymentModalOverlay').style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModalOverlay').style.display = 'none';
+        }
+
+        async function processMockPayment() {
+            const btnText = document.getElementById('payActionText');
+            const loader = document.getElementById('payLoader');
+            btnText.style.display = 'none';
+            loader.style.display = 'block';
+
+            try {
+                await fetch('/api/opd/pay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tokenId: appState.myToken })
+                });
+
+                setTimeout(() => {
+                    alert("🎉 Payment Successful!");
+                    closePaymentModal();
+                    document.getElementById('payBtn').innerText = "✅ Paid Successfully";
+                    document.getElementById('payBtn').disabled = true;
+                    document.getElementById('downloadReceiptBtn').style.display = 'block';
+                    btnText.style.display = 'block';
+                    loader.style.display = 'none';
+                    updateReceiptData();
+                }, 1000);
+            } catch (err) {
+                alert("Payment failed");
+            }
+        }
+
+        function updateReceiptData() {
+            document.getElementById('rToken').innerText = appState.myToken;
+            document.getElementById('rName').innerText = document.getElementById('name').value;
+            document.getElementById('rSpecialty').innerText = appState.selectedDept;
+            document.getElementById('rDate').innerText = document.getElementById('date').value;
+            document.getElementById('rTxn').innerText = "TXN-" + Math.floor(Math.random() * 1000000);
+        }
+
+        function printReceipt() { window.print(); }
+
+        function resetForm() {
+            location.reload(); // Simplest way to reset the whole wizard state
+        }
+    </script>
+</body>
+
+</html>
