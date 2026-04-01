@@ -127,7 +127,7 @@
 
     <header class="navbar scrolled" id="navbar">
         <a href="/" class="brand">
-            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chitikshalaya</span>
+            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chikitsalya</span>
         </a>
         <nav class="nav-links">
             <a href="/" data-i18n="nav_home">Home</a>
@@ -163,8 +163,8 @@
             <!-- Left Side: Booking Form -->
             <div class="glass-panel booking-card animate-fade-up">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 class="section-header" style="margin-bottom: 0;" data-i18n="request_dispatch">
-                        🚑 Request Dispatch
+                    <h2 class="section-header" style="margin-bottom: 0;" data-i18n="emergency_dispatch">
+                        Emergency Dispatch
                     </h2>
                     <span id="booking-status" style="display: none;" class="status-badge status-searching">
                         <span class="loader-dot"
@@ -172,11 +172,15 @@
                         <span data-i18n="searching">Searching...</span>
                     </span>
                 </div>
+                
+                <p style="color: var(--text-muted); margin-bottom: 25px;" data-i18n="dispatch_subtitle">
+                    Request an ambulance immediately. Our AI tracks the nearest available unit.
+                </p>
 
                 <form id="bookingForm" onsubmit="handleBooking(event)">
                     <div class="form-group" style="margin-bottom: 15px;">
                         <label class="form-label" data-i18n="patient_name">Patient Name</label>
-                        <input type="text" class="glass-input-sm" id="patientName" required placeholder="Enter name">
+                        <input type="text" class="glass-input-sm" id="patientName" required placeholder="Enter name" data-i18n-placeholder="enter_name">
                     </div>
 
                     <div class="form-group" style="margin-bottom: 15px;">
@@ -199,41 +203,36 @@
                     <div class="form-group" style="margin-bottom: 25px;">
                         <label class="form-label" data-i18n="pickup_location">Pickup Location (Auto-detected)</label>
                         <textarea class="glass-input-sm" id="pickupLocation" rows="2"
-                            placeholder="Detecting location..." readonly></textarea>
+                            placeholder="Detecting location..." readonly data-i18n-placeholder="detecting_location"></textarea>
                     </div>
 
                     <button type="submit" id="bookBtn" class="btn-glow"
-                        style="width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); border: none;" data-i18n="btn_dispatch">
-                        🚨 DISPATCH AMBULANCE
+                        style="width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); border: none;" data-i18n="btn_request_dispatch">
+                        REQUEST DISPATCH NOW
                     </button>
                 </form>
 
                 <!-- Active Driver Card (Hidden initially) -->
                 <div id="driverInfo" class="driver-info">
-                    <div class="glass-panel animate-fade-up" style="max-width: 800px; margin: 0 auto; text-align: center; margin-bottom: 40px; border: 1px solid rgba(239, 68, 68, 0.3);">
-                <h1 style="font-size: 3rem; color: #fca5a5; margin-bottom: 15px;" data-i18n="emergency_hotline">Emergency Hotline</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem;" data-i18n="emergency_desc">
-                    If you are experiencing severe pain, bleeding, or breathing issues, contact emergency services.
-                </p>
-                <div style="margin-top: 25px;">
-                    <a href="tel:108" class="btn-glow" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 15px 40px; font-size: 1.2rem;" data-i18n="btn_call_ambulance">
-                        Call Ambulance (108)
-                    </a>
-                </div>
-            </div>
                     <div class="driver-header">
                         <div style="font-size: 2.5rem;">👨‍✈️</div>
                         <div>
                             <h3 style="color: #fff; margin-bottom: 5px;">Ramesh Kumar</h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem;">ALS Ambulance • UP32 XY 1234</p>
+                            <div style="display: flex; align-items: center; gap: 10px; color: #4ade80;">
+                                <span class="pulse-ring"></span>
+                                <span data-i18n="location_detected">Location Detected</span>
+                            </div>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px;">
+                    <div style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);" data-i18n="finding_nearest">
+                        Finding nearest ambulance...
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
                         <a href="tel:9876543210" class="btn-glow"
                             style="flex: 1; text-align: center; padding: 8px; font-size: 0.9rem;" data-i18n="call_driver">📞 Call Driver</a>
                     </div>
                     <div class="eta-box">
-                        ⏳ ETA: 4 Minutes (1.2 km away)
+                        ⏳ <span data-i18n="eta_label">ETA:</span> 4 <span data-i18n="minutes">Minutes</span> (1.2 km away)
                     </div>
                 </div>
 

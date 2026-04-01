@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnostics | AI Health Assistant</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="/i18n.js"></script>
     <style>
         .diagnostics-grid {
             display: grid;
@@ -51,17 +52,18 @@
         }
 
         .result-box::before {
-            content: "AI Analysis";
+            content: attr(data-label);
             position: absolute;
             top: -2px;
             left: 20px;
-            background: var(--bg-dark);
-            padding: 0 5px;
+            background: #0f172a;
+            padding: 0 10px;
             font-size: 0.8rem;
             color: var(--primary-glow);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
+            border-radius: 4px;
         }
 
         /* Custom scrollbar for result box */
@@ -198,16 +200,23 @@
 
     <header class="navbar scrolled" id="navbar">
         <a href="/" class="brand">
-            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> AI Chitikshalaya
+            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chikitsalya</span>
         </a>
         <nav class="nav-links">
-            <a href="/">Home</a>
-            <a href="/home">AI Assistant</a>
-            <a href="/opd">OPD Booking</a>
-            <a href="/ambulance">Ambulance</a>
-            <a href="/hospitals">Find Hospitals</a>
-            <a href="/pharmacies">Medical Shops</a>
-            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;">Emergency</a>
+            <a href="/" data-i18n="nav_home">Home</a>
+            <a href="/home" data-i18n="nav_assistant">AI Assistant</a>
+            <a href="/opd" data-i18n="nav_opd">OPD Booking</a>
+            <a href="/ambulance" data-i18n="nav_ambulance">Ambulance</a>
+            <a href="/hospitals" data-i18n="nav_hospitals">Find Hospitals</a>
+            <a href="/pharmacies" data-i18n="nav_pharmacies">Medical Shops</a>
+            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;" data-i18n="nav_emergency">Emergency</a>
+            
+            <select class="language-selector glass-input" onchange="setLanguage(this.value)" 
+                style="margin-left: 15px; padding: 5px 10px; height: auto; width: auto; font-size: 0.9rem; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 8px;">
+                <option value="en">🇺🇸 EN</option>
+                <option value="hi">🇮🇳 HI</option>
+                <option value="bn">🇮🇳 BN</option>
+            </select>
         </nav>
     </header>
 
@@ -218,39 +227,24 @@
             <!-- Left Side: AI Interaction -->
             <div class="glass-panel chat-card animate-fade-up">
                 <h2 class="section-header">
-                    <span style="font-size: 2rem;">🧠</span> Symptom Analysis
+                    <span style="font-size: 2rem;">🧠</span> <span data-i18n="symptom_analysis_title">Symptom Analysis</span>
                 </h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <p style="color: var(--text-muted); margin-bottom: 20px;" data-i18n="symptom_analysis_desc">
                     Select common symptoms or describe how you feel in detail.
                 </p>
 
                 <div class="symptom-selector">
-                    <button class="badge-pill" type="button" onclick="addSymptom('fever')">🤒 Fever</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('body pain')">💪 Body Pain</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('vomiting')">🤮 Vomiting</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('weakness')">😓 Weakness</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('headache')">🤕 Headache</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('cough')">😷 Cough</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('stomach pain')">🤢 Stomach
-                        ache</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('fever')">🤒 <span data-i18n="symptom_fever">Fever</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('body pain')">💪 <span data-i18n="symptom_body_pain">Body Pain</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('vomiting')">🤮 <span data-i18n="symptom_vomiting">Vomiting</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('weakness')">😓 <span data-i18n="symptom_weakness">Weakness</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('headache')">🤕 <span data-i18n="symptom_headache">Headache</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('cough')">😷 <span data-i18n="symptom_cough">Cough</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('stomach pain')">🤢 <span data-i18n="symptom_stomach_pain">Stomach ache</span></button>
                 </div>
 
                 <div style="position: relative; margin-bottom: 20px;">
-                    <select id="language" class="glass-input"
-                        style="width: 100%; margin-bottom: 15px; padding: 12px; background: rgba(15, 23, 42, 0.6); color: white; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 12px; font-size: 1rem; outline: none;">
-                        <option value="en">🇺🇸 English</option>
-                        <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
-                        <option value="bn">🇮🇳 Bengali (বাংলা)</option>
-                        <option value="te">🇮🇳 Telugu (తెలుగు)</option>
-                        <option value="mr">🇮🇳 Marathi (मराठी)</option>
-                        <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
-                        <option value="gu">🇮🇳 Gujarati (ગુજરાતી)</option>
-                        <option value="kn">🇮🇳 Kannada (ಕನ್ನಡ)</option>
-                        <option value="ml">🇮🇳 Malayalam (മലയാളം)</option>
-                        <option value="pa">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
-                    </select>
-
-                    <textarea id="question" class="glass-input" rows="4"
+                    <textarea id="question" class="glass-input" rows="4" data-i18n="placeholder_symptoms"
                         placeholder="Describe your symptoms thoroughly..."></textarea>
 
                     <button class="btn-glow" style="width: 100%; margin-top: 15px;" onclick="askAI()">
@@ -258,14 +252,14 @@
                             stroke-width="2" style="margin-right: 8px;">
                             <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                         </svg>
-                        Analyze Symptoms
+                        <span data-i18n="btn_analyze">Analyze Symptoms</span>
                     </button>
                 </div>
 
                 <!-- Customized File Upload Input -->
                 <div style="margin-bottom: 20px;">
                     <label for="imageUpload"
-                        style="display: block; color: var(--text-muted); margin-bottom: 8px;">Upload Medical Output
+                        style="display: block; color: var(--text-muted); margin-bottom: 8px;" data-i18n="label_upload">Upload Medical Output
                         (X-Ray, Scan, etc.)</label>
                     <input type="file" id="imageUpload" accept="image/*" class="glass-input"
                         style="width: 100%; padding: 10px; cursor: pointer;" />
@@ -274,10 +268,10 @@
                 <div id="loader" class="loader"></div>
 
                 <!-- Results container -->
-                <div id="result" class="result-box">
+                <div id="result" class="result-box" data-label-i18n="ai_analysis" data-label="AI Analysis">
                     <div style="text-align: center; color: var(--text-muted); opacity: 0.6; margin-top: 20%;">
                         <div style="font-size: 3rem; margin-bottom: 10px;">🩺</div>
-                        Awaiting input. Your health analysis will appear here.
+                        <span data-i18n="awaiting_input">Awaiting input. Your health analysis will appear here.</span>
                     </div>
                 </div>
             </div>
@@ -291,12 +285,12 @@
                     <div style="display: flex; align-items: flex-start; gap: 15px;">
                         <span style="font-size: 2.5rem;">🚨</span>
                         <div>
-                            <h3 style="color: #fca5a5; margin-bottom: 8px;">Emergency Hotline</h3>
-                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px;">If you are
+                            <h3 style="color: #fca5a5; margin-bottom: 8px;" data-i18n="emergency_title">Emergency Hotline</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px;" data-i18n="emergency_desc">If you are
                                 experiencing severe pain, bleeding, or breathing issues, immediately contact emergency
                                 services.</p>
                             <a href="tel:108" class="btn-glow"
-                                style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 10px 20px; font-size: 0.95rem;">
+                                style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 10px 20px; font-size: 0.95rem;" data-i18n="btn_call_ambulance">
                                 Call Ambulance (108)
                             </a>
                         </div>
@@ -304,7 +298,7 @@
                 </div>
 
                 <div class="glass-panel">
-                    <h2 class="section-header">
+                    <h2 class="section-header" data-i18n="specialists_title">
                         <span style="font-size: 2rem;">👨‍⚕️</span> Specialists on Call
                     </h2>
 
@@ -314,10 +308,10 @@
                             <div class="doc-avatar">👨‍⚕️</div>
                             <div class="doc-info">
                                 <h3>Dr. Sharma</h3>
-                                <p>General Physician • 15 Yrs Exp</p>
+                                <p data-i18n="doc_physician">General Physician • 15 Yrs Exp</p>
                                 <div class="doc-actions">
-                                    <a href="tel:9876543210" class="doc-btn btn-call">📞 Call</a>
-                                    <a href="https://wa.me/919876543210" class="doc-btn btn-whatsapp">💬 WhatsApp</a>
+                                    <a href="tel:9876543210" class="doc-btn btn-call">📞 <span data-i18n="btn_call">Call</span></a>
+                                    <a href="https://wa.me/919876543210" class="doc-btn btn-whatsapp">💬 <span data-i18n="btn_whatsapp">WhatsApp</span></a>
                                 </div>
                             </div>
                         </div>
@@ -328,10 +322,10 @@
                             </div>
                             <div class="doc-info">
                                 <h3>Dr. Meena</h3>
-                                <p>Women's Health • 12 Yrs Exp</p>
+                                <p data-i18n="doc_womens">Women's Health • 12 Yrs Exp</p>
                                 <div class="doc-actions">
-                                    <a href="tel:9876543211" class="doc-btn btn-call">📞 Call</a>
-                                    <a href="https://wa.me/919876543211" class="doc-btn btn-whatsapp">💬 WhatsApp</a>
+                                    <a href="tel:9876543211" class="doc-btn btn-call">📞 <span data-i18n="btn_call">Call</span></a>
+                                    <a href="https://wa.me/919876543211" class="doc-btn btn-whatsapp">💬 <span data-i18n="btn_whatsapp">WhatsApp</span></a>
                                 </div>
                             </div>
                         </div>
@@ -373,14 +367,14 @@
         // Original API Call Logic matching backend expectations
         async function askAI() {
             const question = document.getElementById("question").value;
-            const language = document.getElementById("language").value;
+            const language = localStorage.getItem('selectedLang') || 'en';
             const fileInput = document.getElementById("imageUpload");
             const resultBox = document.getElementById("result");
             const loader = document.getElementById("loader");
 
             // Check if neither text nor an image is provided
             if (!question.trim() && fileInput.files.length === 0) {
-                resultBox.innerHTML = '<span style="color: #fca5a5;">⚠️ Please specify your symptoms or upload an image before analyzing.</span>';
+                resultBox.innerHTML = `<span style="color: #fca5a5;">${getTranslation('error_no_symptoms')}</span>`;
                 return;
             }
 
@@ -408,7 +402,7 @@
                             Confidence: ${(imgData.confidence * 100).toFixed(1)}%
                         </div>`;
                     } else {
-                        formattedResponse += '<div style="color: #fca5a5;">⚠️ Failed to analyze the image. Please try again.</div><br>';
+                        formattedResponse += `<div style="color: #fca5a5;">⚠️ Fail</div><br>`;
                     }
                 }
 
@@ -435,7 +429,7 @@
                 resultBox.innerHTML = `<div style="animation: fadeInUp 0.4s ease;">${formattedResponse}</div>`;
             } catch (err) {
                 loader.style.display = "none";
-                resultBox.innerHTML = '<span style="color: #fca5a5;">❌ Failed to connect to AI Core. Please ensure the backend is running.</span>';
+                resultBox.innerHTML = `<span style="color: #fca5a5;">${getTranslation('error_api_fail')}</span>`;
                 console.error(err);
             }
         }

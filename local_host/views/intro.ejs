@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chitikshalaya | The Future of Healthcare</title>
+    <title data-i18n="brand_title">AI Chikitsalya | The Future of Healthcare</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="/i18n.js"></script>
     <style>
         /* --- Neural Bot Styles --- */
         .bot-container {
@@ -196,16 +197,23 @@
 
     <header class="navbar scrolled" id="navbar">
         <a href="/" class="brand">
-            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> AI Chitikshalaya
+            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chikitsalya</span>
         </a>
         <nav class="nav-links">
-            <a href="/">Home</a>
-            <a href="/home">AI Assistant</a>
-            <a href="/opd">OPD Booking</a>
-            <a href="/ambulance">Ambulance</a>
-            <a href="/hospitals">Find Hospitals</a>
-            <a href="/pharmacies">Medical Shops</a>
-            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;">Emergency</a>
+            <a href="/" data-i18n="nav_home">Home</a>
+            <a href="/home" data-i18n="nav_assistant">AI Assistant</a>
+            <a href="/opd" data-i18n="nav_opd">OPD Booking</a>
+            <a href="/ambulance" data-i18n="nav_ambulance">Ambulance</a>
+            <a href="/hospitals" data-i18n="nav_hospitals">Find Hospitals</a>
+            <a href="/pharmacies" data-i18n="nav_pharmacies">Medical Shops</a>
+            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;" data-i18n="nav_emergency">Emergency</a>
+            
+            <select class="language-selector glass-input" onchange="setLanguage(this.value)" 
+                style="margin-left: 15px; padding: 5px 10px; height: auto; width: auto; font-size: 0.9rem; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 8px;">
+                <option value="en">🇺🇸 EN</option>
+                <option value="hi">🇮🇳 HI</option>
+                <option value="bn">🇮🇳 BN</option>
+            </select>
         </nav>
     </header>
 
@@ -215,15 +223,14 @@
                 <div style="display: inline-block; padding: 8px 20px; background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 99px; color: var(--primary-accent); font-weight: 700; font-size: 0.85rem; margin-bottom: 25px;">
                     ✨ THE FUTURE OF MEDICINE
                 </div>
-                <h1 class="hero-title">
-                    Empowering <br>
-                    <span class="heading-gradient">AI Health Care</span>
+                <h1 class="hero-title" data-i18n="hero_title">
+                    Empowering AI Health Care
                 </h1>
-                <p class="hero-subtitle">
+                <p class="hero-subtitle" data-i18n="hero_subtitle">
                     Experience state-of-the-art medical intelligence. Analyze symptoms, get real-time health advice, and connect with top specialists instantly.
                 </p>
                 <div style="display: flex; gap: 20px;">
-                    <a href="/home" class="btn-glow" style="padding: 18px 40px; font-size: 1.2rem;">
+                    <a href="/home" class="btn-glow" style="padding: 18px 40px; font-size: 1.2rem;" data-i18n="btn_get_started">
                         Get Started →
                     </a>
                 </div>
@@ -258,18 +265,18 @@
         <section class="features-grid">
             <div class="feature-card reveal">
                 <span class="feature-icon">🧠</span>
-                <h3>Real-time Diagnostics</h3>
-                <p>Input symptoms into our neural engine and receive deep preliminary analysis in seconds.</p>
+                <h3 data-i18n="feature_diagnostics_title">Real-time Diagnostics</h3>
+                <p data-i18n="feature_diagnostics_desc">Input symptoms into our neural engine and receive deep preliminary analysis in seconds.</p>
                 <ul style="margin-top: 20px; color: var(--text-muted); list-style: none;">
-                    <li>✓ Deep NLP Analysis</li>
-                    <li>✓ Symptom Mapping</li>
+                    <li>✓ <span data-i18n="bullet_deep_nlp">Deep NLP Analysis</span></li>
+                    <li>✓ <span data-i18n="bullet_symptom_mapping">Symptom Mapping</span></li>
                 </ul>
             </div>
 
             <div class="feature-card reveal" style="transition-delay: 0.1s;">
                 <span class="feature-icon">📅</span>
-                <h3>Smart OPD</h3>
-                <p>Skip the physical queues. Book your consultation token online and get real-time queue updates.</p>
+                <h3 data-i18n="feature_opd_title">Smart OPD</h3>
+                <p data-i18n="feature_opd_desc">Skip the physical queues. Book your consultation token online and get real-time queue updates.</p>
                 <a href="/opd" class="btn-glow" style="margin-top: 15px; padding: 8px 20px; font-size: 0.9rem; background: rgba(14, 165, 233, 0.1); border: 1px solid var(--primary-accent); color: var(--primary-accent);">
                     Book Token →
                 </a>
@@ -277,8 +284,8 @@
 
             <div class="feature-card reveal" style="transition-delay: 0.2s;">
                 <span class="feature-icon">📍</span>
-                <h3>Instant Radar</h3>
-                <p>Find the nearest pharmacies and hospitals with our 50km Ultra-Scan ultra-wide radar.</p>
+                <h3 data-i18n="feature_radar_title">Instant Radar</h3>
+                <p data-i18n="feature_radar_desc">Find the nearest pharmacies and hospitals with our 50km Ultra-Scan ultra-wide radar.</p>
                 <ul style="margin-top: 20px; color: var(--text-muted); list-style: none;">
                     <li>✓ Live OSM Data</li>
                     <li>✓ Emergency Routing</li>
@@ -287,40 +294,42 @@
 
             <div id="emergency" class="feature-card reveal" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); transition-delay: 0.2s;">
                 <span class="feature-icon" style="filter: drop-shadow(0 0 10px #ef4444);">🚨</span>
-                <h3 style="color: #fca5a5;">Critical Response</h3>
-                <p>Immediate access to emergency services with one-tap ambulance dispatching.</p>
-                <a href="tel:108" class="btn-glow" style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-top: 25px; padding: 12px 30px;">
-                    Dispatch Ambulance (108)
-                </a>
+                <h3 style="color: #fca5a5;" data-i18n="feature_emergency_title">Critical Response</h3>
+                <p data-i18n="feature_emergency_desc">Immediate access to emergency services with one-tap ambulance dispatching.</p>
+                <div style="margin-top: 25px;">
+                    <a href="tel:108" class="btn-glow" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 12px 30px;" data-i18n="btn_dispatch">
+                        Dispatch Ambulance (108)
+                    </a>
+                </div>
             </div>
         </section>
 
         <!-- New Roadmap Section -->
         <section class="roadmap-section reveal">
-            <h2 class="heading-gradient" style="font-size: 3rem; margin-bottom: 50px;">Future Roadmap</h2>
+            <h2 class="heading-gradient" style="font-size: 3rem; margin-bottom: 50px;" data-i18n="roadmap_title">Future Roadmap</h2>
             <div style="max-width: 800px; margin: 0 auto; text-align: left; position: relative; padding-left: 40px; border-left: 2px solid rgba(255,255,255,0.1);">
                 
                 <div class="roadmap-item reveal">
                     <div class="roadmap-icon">🧬</div>
                     <div>
-                        <h4 style="color: #fff;">Q2 2026: DNA Risk Prediction</h4>
-                        <p style="color: var(--text-muted);">Integrating genomic datasets for advanced preventive healthcare.</p>
+                        <h4 style="color: #fff;" data-i18n="roadmap_q2_title">Q2 2026: DNA Risk Prediction</h4>
+                        <p style="color: var(--text-muted);" data-i18n="roadmap_q2_desc">Integrating genomic datasets for advanced preventive healthcare.</p>
                     </div>
                 </div>
 
                 <div class="roadmap-item reveal">
                     <div class="roadmap-icon">📱</div>
                     <div>
-                        <h4 style="color: #fff;">Q3 2026: Native Mobile App</h4>
-                        <p style="color: var(--text-muted);">Full-featured Android & iOS app with offline SOS radar.</p>
+                        <h4 style="color: #fff;" data-i18n="roadmap_q3_title">Q3 2026: Native Mobile App</h4>
+                        <p style="color: var(--text-muted);" data-i18n="roadmap_q3_desc">Full-featured Android & iOS app with offline SOS radar.</p>
                     </div>
                 </div>
 
                 <div class="roadmap-item reveal">
                     <div class="roadmap-icon">🛰️</div>
                     <div>
-                        <h4 style="color: #fff;">Q4 2026: Satellite Telemedicine</h4>
-                        <p style="color: var(--text-muted);">Low-latency video consultations in extremely rural areas.</p>
+                        <h4 style="color: #fff;" data-i18n="roadmap_q4_title">Q4 2026: Satellite Telemedicine</h4>
+                        <p style="color: var(--text-muted);" data-i18n="roadmap_q4_desc">Low-latency video consultations in extremely rural areas.</p>
                     </div>
                 </div>
 

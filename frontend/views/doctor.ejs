@@ -52,17 +52,18 @@
         }
 
         .result-box::before {
-            content: "AI Analysis";
+            content: attr(data-label);
             position: absolute;
             top: -2px;
             left: 20px;
-            background: var(--bg-dark);
-            padding: 0 5px;
+            background: #0f172a;
+            padding: 0 10px;
             font-size: 0.8rem;
             color: var(--primary-glow);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
+            border-radius: 4px;
         }
 
         /* Custom scrollbar for result box */
@@ -199,7 +200,7 @@
 
     <header class="navbar scrolled" id="navbar">
         <a href="/" class="brand">
-            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chitikshalaya</span>
+            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chikitsalya</span>
         </a>
         <nav class="nav-links">
             <a href="/" data-i18n="nav_home">Home</a>
@@ -233,13 +234,13 @@
                 </p>
 
                 <div class="symptom-selector">
-                    <button class="badge-pill" type="button" onclick="addSymptom('fever')">🤒 Fever</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('body pain')">💪 Body Pain</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('vomiting')">🤮 Vomiting</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('weakness')">😓 Weakness</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('headache')">🤕 Headache</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('cough')">😷 Cough</button>
-                    <button class="badge-pill" type="button" onclick="addSymptom('stomach pain')">🤢 Stomach ache</button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('fever')">🤒 <span data-i18n="symptom_fever">Fever</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('body pain')">💪 <span data-i18n="symptom_body_pain">Body Pain</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('vomiting')">🤮 <span data-i18n="symptom_vomiting">Vomiting</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('weakness')">😓 <span data-i18n="symptom_weakness">Weakness</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('headache')">🤕 <span data-i18n="symptom_headache">Headache</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('cough')">😷 <span data-i18n="symptom_cough">Cough</span></button>
+                    <button class="badge-pill" type="button" onclick="addSymptom('stomach pain')">🤢 <span data-i18n="symptom_stomach_pain">Stomach ache</span></button>
                 </div>
 
                 <div style="position: relative; margin-bottom: 20px;">
@@ -267,7 +268,7 @@
                 <div id="loader" class="loader"></div>
 
                 <!-- Results container -->
-                <div id="result" class="result-box">
+                <div id="result" class="result-box" data-label-i18n="ai_analysis" data-label="AI Analysis">
                     <div style="text-align: center; color: var(--text-muted); opacity: 0.6; margin-top: 20%;">
                         <div style="font-size: 3rem; margin-bottom: 10px;">🩺</div>
                         <span data-i18n="awaiting_input">Awaiting input. Your health analysis will appear here.</span>
@@ -309,8 +310,8 @@
                                 <h3>Dr. Sharma</h3>
                                 <p data-i18n="doc_physician">General Physician • 15 Yrs Exp</p>
                                 <div class="doc-actions">
-                                    <a href="tel:9876543210" class="doc-btn btn-call">📞 Call</a>
-                                    <a href="https://wa.me/919876543210" class="doc-btn btn-whatsapp">💬 WhatsApp</a>
+                                    <a href="tel:9876543210" class="doc-btn btn-call">📞 <span data-i18n="btn_call">Call</span></a>
+                                    <a href="https://wa.me/919876543210" class="doc-btn btn-whatsapp">💬 <span data-i18n="btn_whatsapp">WhatsApp</span></a>
                                 </div>
                             </div>
                         </div>
@@ -323,8 +324,8 @@
                                 <h3>Dr. Meena</h3>
                                 <p data-i18n="doc_womens">Women's Health • 12 Yrs Exp</p>
                                 <div class="doc-actions">
-                                    <a href="tel:9876543211" class="doc-btn btn-call">📞 Call</a>
-                                    <a href="https://wa.me/919876543211" class="doc-btn btn-whatsapp">💬 WhatsApp</a>
+                                    <a href="tel:9876543211" class="doc-btn btn-call">📞 <span data-i18n="btn_call">Call</span></a>
+                                    <a href="https://wa.me/919876543211" class="doc-btn btn-whatsapp">💬 <span data-i18n="btn_whatsapp">WhatsApp</span></a>
                                 </div>
                             </div>
                         </div>
@@ -373,7 +374,7 @@
 
             // Check if neither text nor an image is provided
             if (!question.trim() && fileInput.files.length === 0) {
-                resultBox.innerHTML = '<span style="color: #fca5a5;">⚠️ Please specify your symptoms or upload an image before analyzing.</span>';
+                resultBox.innerHTML = `<span style="color: #fca5a5;">${getTranslation('error_no_symptoms')}</span>`;
                 return;
             }
 
@@ -401,7 +402,7 @@
                             Confidence: ${(imgData.confidence * 100).toFixed(1)}%
                         </div>`;
                     } else {
-                        formattedResponse += '<div style="color: #fca5a5;">⚠️ Failed to analyze the image. Please try again.</div><br>';
+                        formattedResponse += `<div style="color: #fca5a5;">⚠️ Fail</div><br>`;
                     }
                 }
 
@@ -428,7 +429,7 @@
                 resultBox.innerHTML = `<div style="animation: fadeInUp 0.4s ease;">${formattedResponse}</div>`;
             } catch (err) {
                 loader.style.display = "none";
-                resultBox.innerHTML = '<span style="color: #fca5a5;">❌ Failed to connect to AI Core. Please ensure the backend is running.</span>';
+                resultBox.innerHTML = `<span style="color: #fca5a5;">${getTranslation('error_api_fail')}</span>`;
                 console.error(err);
             }
         }

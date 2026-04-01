@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pharmacy Locator | Glowing Medical Map</title>
+    <title>Pharmacy Locator | AI Chikitsalya</title>
     <link rel="stylesheet" href="/style.css">
     <script src="/i18n.js"></script>
     
@@ -115,7 +115,7 @@
 
     <header class="navbar scrolled" id="navbar">
         <a href="/" class="brand">
-            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chitikshalaya</span>
+            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chikitsalya</span>
         </a>
         <nav class="nav-links">
             <a href="/" data-i18n="nav_home">Home</a>
@@ -138,7 +138,7 @@
     <main class="main-wrapper">
         <div class="map-header animate-fade-up">
             <h1 class="hero-title animate-fade-up">
-                <span class="heading-gradient" data-i18n="nav_pharmacies">Pharmacy Locator</span>
+                <span class="heading-gradient" data-i18n="nav_pharmacies">Medical Shops</span>
             </h1>
             <p class="hero-subtitle animate-fade-up" style="animation-delay: 0.1s;" data-i18n="feature_radar_desc">
                 Find the nearest pharmacies and hospitals with our 50km Ultra-Scan ultra-wide radar.
@@ -149,13 +149,13 @@
             </div>
             
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
-                <button class="btn-glow" id="scanBtn" onclick="initiateScan()">
+                <button class="btn-glow" id="scanBtn" onclick="initiateScan()" data-i18n="start_radar_scan">
                     🛰️ Start Radar Scan
                 </button>
-                <button class="btn-glow" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4);" onclick="toggleAddForm()">
+                <button class="btn-glow" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4);" onclick="toggleAddForm()" data-i18n="add_missing_shop">
                     ➕ Add Missing Shop
                 </button>
-                <button class="btn-glow" style="background: rgba(30, 209, 141, 0.1); border: 1px dashed rgba(30, 209, 141, 0.4);" onclick="runSimulator()">
+                <button class="btn-glow" style="background: rgba(30, 209, 141, 0.1); border: 1px dashed rgba(30, 209, 141, 0.4);" onclick="runSimulator()" data-i18n="run_simulator">
                     ✨ Run Simulator
                 </button>
             </div>
@@ -163,11 +163,11 @@
 
             <!-- New Hidden Form for Adding Pharmacies -->
             <div id="addForm" style="display: none; margin-top: 30px; max-width: 500px; margin-left: auto; margin-right: auto; padding: 25px; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--glass-border); border-radius: 20px;" class="animate-fade-up">
-                <h3 style="margin-bottom: 15px; color: #fff;">Feed New Pharmacy Data</h3>
-                <input type="text" id="newName" class="glass-input" placeholder="Pharmacy Name" style="margin-bottom: 12px; height: 45px; padding: 10px;">
-                <input type="text" id="newAddr" class="glass-input" placeholder="Address" style="margin-bottom: 12px; height: 45px; padding: 10px;">
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">(Coordinates will be auto-set to your current location)</p>
-                <button class="btn-glow" style="width: 100%; height: 45px;" onclick="addPharmacyToFeed()">Save to Local Feed</button>
+                <h3 style="margin-bottom: 15px; color: #fff;" data-i18n="feed_new_pharmacy">Feed New Pharmacy Data</h3>
+                <input type="text" id="newName" class="glass-input" data-i18n="placeholder_pharmacy_name" placeholder="Pharmacy Name" style="margin-bottom: 12px; height: 45px; padding: 10px;">
+                <input type="text" id="newAddr" class="glass-input" data-i18n="placeholder_address" placeholder="Address" style="margin-bottom: 12px; height: 45px; padding: 10px;">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;" data-i18n="auto_location_msg">(Coordinates will be auto-set to your current location)</p>
+                <button class="btn-glow" style="width: 100%; height: 45px;" onclick="addPharmacyToFeed()" data-i18n="btn_save_feed">Save to Local Feed</button>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
                 iconSize: [14, 14],
                 iconAnchor: [7, 7]
             });
-            L.marker([lat, lon], { icon: userIcon }).addTo(map).bindPopup("<b>You are here</b>");
+            L.marker([lat, lon], { icon: userIcon }).addTo(map).bindPopup(`<b>${getTranslation('you_are_here')}</b>`);
         }
 
         function toggleAddForm() {
@@ -205,12 +205,12 @@
         }
 
         async function addPharmacyToFeed() {
-            if (!userLat) { alert("Please scan first to establish location!"); return; }
+            if (!userLat) { alert(getTranslation('err_scan_first')); return; }
             
             const name = document.getElementById('newName').value;
             const address = document.getElementById('newAddr').value;
             
-            if (!name || !address) return alert("Fill all fields!");
+            if (!name || !address) return alert(getTranslation('err_fill_all'));
 
             const res = await fetch('/api/add-pharmacy', {
                 method: 'POST',
@@ -226,16 +226,15 @@
 
         async function runSimulator() {
             if (!userLat) { 
-                alert("Please click 'Start Radar Scan' first to detect your location!"); 
+                alert(getTranslation('err_scan_first')); 
                 return; 
             }
             
             const statusText = document.getElementById('status-text');
             const status = document.getElementById('status');
             status.style.display = 'inline-flex';
-            statusText.innerText = "Simulating local Indian medical stores...";
+            statusText.innerText = getTranslation('simulating_stores');
 
-            // Create 5 fake shops near the user
             const fakeShops = [
                 { name: "Demo: Kumar Medicos", addr: "Near Main Market", offLat: 0.005, offLon: 0.005 },
                 { name: "Demo: Gramin Seva Kendra", addr: "Village Entrance", offLat: -0.008, offLon: 0.003 },
@@ -258,7 +257,7 @@
             });
 
             map.flyTo([userLat, userLon], 15);
-            statusText.innerText = "Simulation complete. 5 stores spawned near you.";
+            statusText.innerText = getTranslation('simulation_complete');
         }
 
         async function initiateScan() {
@@ -269,6 +268,7 @@
 
             btn.style.opacity = '0.5';
             status.style.display = 'inline-flex';
+            statusText.innerText = getTranslation('scanning_local');
 
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(async (position) => {
@@ -280,7 +280,7 @@
                         const pharmacies = await response.json();
                         
                         if (!response.ok) {
-                            statusText.innerText = pharmacies.error || "Radar connection interrupted.";
+                            statusText.innerText = pharmacies.error || getTranslation('error_api_fail');
                             btn.style.opacity = '1';
                             return;
                         }
@@ -288,11 +288,11 @@
                         markersLayer.clearLayers();
 
                         if (pharmacies.length === 0) {
-                            statusText.innerText = "No medical shops detected in range.";
+                            statusText.innerText = getTranslation('no_shops_found');
                             return;
                         }
 
-                        statusText.innerText = `${pharmacies.length} medical shops identified across hybrid sources.`;
+                        statusText.innerText = `${pharmacies.length} ${getTranslation('pharmacy_found')}`;
                         
                         pharmacies.forEach(p => {
                             const isLocal = p.source === 'local_feed';
@@ -309,21 +309,21 @@
                                     <div class="pharmacy-addr">${p.address}</div>
                                     <div style="font-size: 0.7rem; color: #64748b; margin-top: 5px;">SOURCE: ${p.source.toUpperCase()}</div>
                                     <div style="margin-top: 8px;">
-                                        <a href="https://maps.google.com/?q=${p.lat},${p.lon}" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.8rem; font-weight: 600;">Get Directions →</a>
+                                        <a href="https://maps.google.com/?q=${p.lat},${p.lon}" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.8rem; font-weight: 600;">${getTranslation('nav')} →</a>
                                     </div>
                                 `);
                             markersLayer.addLayer(marker);
                         });
 
                     } catch (err) {
-                        statusText.innerText = "Error: Link to satellite broken.";
+                        statusText.innerText = getTranslation('error_api_fail');
                     }
                     btn.style.opacity = '1';
                 }, () => {
-                    statusText.innerText = "Error: Access to sensors denied.";
+                    statusText.innerText = getTranslation('error_denied');
                 });
             } else {
-                statusText.innerText = "Error: Browser lacks geolocation protocols.";
+                statusText.innerText = getTranslation('err_unsupported');
             }
         }
 

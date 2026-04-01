@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chitikshalaya | The Future of Healthcare</title>
+    <title data-i18n="brand_title">AI Chikitsalya | The Future of Healthcare</title>
     <link rel="stylesheet" href="/style.css">
     <script src="/i18n.js"></script>
     <style>
@@ -197,7 +197,7 @@
 
     <header class="navbar scrolled" id="navbar">
         <a href="/" class="brand">
-            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chitikshalaya</span>
+            <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> <span data-i18n="brand_name">AI Chikitsalya</span>
         </a>
         <nav class="nav-links">
             <a href="/" data-i18n="nav_home">Home</a>
@@ -268,8 +268,8 @@
                 <h3 data-i18n="feature_diagnostics_title">Real-time Diagnostics</h3>
                 <p data-i18n="feature_diagnostics_desc">Input symptoms into our neural engine and receive deep preliminary analysis in seconds.</p>
                 <ul style="margin-top: 20px; color: var(--text-muted); list-style: none;">
-                    <li>✓ Deep NLP Analysis</li>
-                    <li>✓ Symptom Mapping</li>
+                    <li>✓ <span data-i18n="bullet_deep_nlp">Deep NLP Analysis</span></li>
+                    <li>✓ <span data-i18n="bullet_symptom_mapping">Symptom Mapping</span></li>
                 </ul>
             </div>
 
@@ -294,40 +294,42 @@
 
             <div id="emergency" class="feature-card reveal" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); transition-delay: 0.2s;">
                 <span class="feature-icon" style="filter: drop-shadow(0 0 10px #ef4444);">🚨</span>
-                <h3 style="color: #fca5a5;">Critical Response</h3>
-                <p>Immediate access to emergency services with one-tap ambulance dispatching.</p>
-                <a href="tel:108" class="btn-glow" style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-top: 25px; padding: 12px 30px;">
-                    Dispatch Ambulance (108)
-                </a>
+                <h3 style="color: #fca5a5;" data-i18n="feature_emergency_title">Critical Response</h3>
+                <p data-i18n="feature_emergency_desc">Immediate access to emergency services with one-tap ambulance dispatching.</p>
+                <div style="margin-top: 25px;">
+                    <a href="tel:108" class="btn-glow" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 12px 30px;" data-i18n="btn_dispatch">
+                        Dispatch Ambulance (108)
+                    </a>
+                </div>
             </div>
         </section>
 
         <!-- New Roadmap Section -->
         <section class="roadmap-section reveal">
-            <h2 class="heading-gradient" style="font-size: 3rem; margin-bottom: 50px;">Future Roadmap</h2>
+            <h2 class="heading-gradient" style="font-size: 3rem; margin-bottom: 50px;" data-i18n="roadmap_title">Future Roadmap</h2>
             <div style="max-width: 800px; margin: 0 auto; text-align: left; position: relative; padding-left: 40px; border-left: 2px solid rgba(255,255,255,0.1);">
                 
                 <div class="roadmap-item reveal">
                     <div class="roadmap-icon">🧬</div>
                     <div>
-                        <h4 style="color: #fff;">Q2 2026: DNA Risk Prediction</h4>
-                        <p style="color: var(--text-muted);">Integrating genomic datasets for advanced preventive healthcare.</p>
+                        <h4 style="color: #fff;" data-i18n="roadmap_q2_title">Q2 2026: DNA Risk Prediction</h4>
+                        <p style="color: var(--text-muted);" data-i18n="roadmap_q2_desc">Integrating genomic datasets for advanced preventive healthcare.</p>
                     </div>
                 </div>
 
                 <div class="roadmap-item reveal">
                     <div class="roadmap-icon">📱</div>
                     <div>
-                        <h4 style="color: #fff;">Q3 2026: Native Mobile App</h4>
-                        <p style="color: var(--text-muted);">Full-featured Android & iOS app with offline SOS radar.</p>
+                        <h4 style="color: #fff;" data-i18n="roadmap_q3_title">Q3 2026: Native Mobile App</h4>
+                        <p style="color: var(--text-muted);" data-i18n="roadmap_q3_desc">Full-featured Android & iOS app with offline SOS radar.</p>
                     </div>
                 </div>
 
                 <div class="roadmap-item reveal">
                     <div class="roadmap-icon">🛰️</div>
                     <div>
-                        <h4 style="color: #fff;">Q4 2026: Satellite Telemedicine</h4>
-                        <p style="color: var(--text-muted);">Low-latency video consultations in extremely rural areas.</p>
+                        <h4 style="color: #fff;" data-i18n="roadmap_q4_title">Q4 2026: Satellite Telemedicine</h4>
+                        <p style="color: var(--text-muted);" data-i18n="roadmap_q4_desc">Low-latency video consultations in extremely rural areas.</p>
                     </div>
                 </div>
 
