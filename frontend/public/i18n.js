@@ -1,0 +1,238 @@
+const translations = {
+    "en": {
+        "nav_home": "Home",
+        "nav_assistant": "AI Assistant",
+        "nav_opd": "OPD Booking",
+        "nav_ambulance": "Ambulance",
+        "nav_hospitals": "Find Hospitals",
+        "nav_pharmacies": "Medical Shops",
+        "nav_emergency": "Emergency",
+        "hero_title": "Empowering AI Health Care",
+        "hero_subtitle": "Experience state-of-the-art medical intelligence. Analyze symptoms, get real-time health advice, and connect with top specialists instantly.",
+        "btn_get_started": "Get Started →",
+        "feature_diagnostics_title": "Real-time Diagnostics",
+        "feature_diagnostics_desc": "Input symptoms into our neural engine and receive deep preliminary analysis in seconds.",
+        "feature_opd_title": "Smart OPD",
+        "feature_opd_desc": "Skip the physical queues. Book your consultation token online and get real-time queue updates.",
+        "feature_radar_title": "Instant Radar",
+        "feature_radar_desc": "Find the nearest pharmacies and hospitals with our 50km Ultra-Scan ultra-wide radar.",
+        "feature_emergency_title": "Critical Response",
+        "feature_emergency_desc": "Immediate access to emergency services with one-tap ambulance dispatching.",
+        "btn_book_token": "Book Token →",
+        "btn_dispatch": "Dispatch Ambulance (108)",
+        "symptom_analysis_title": "Symptom Analysis",
+        "symptom_analysis_desc": "Select common symptoms or describe how you feel in detail.",
+        "placeholder_symptoms": "Describe your symptoms thoroughly...",
+        "btn_analyze": "Analyze Symptoms",
+        "specialists_title": "Specialists on Call",
+        "emergency_hotline": "Emergency Hotline",
+        "emergency_desc": "If you are experiencing severe pain, bleeding, or breathing issues, contact emergency services.",
+        "btn_call_ambulance": "Call Ambulance (108)",
+        "opd_welcome": "OPD Token Station",
+        "opd_subtitle": "Avoid the crowd. Book your appointment and track your queue position live.",
+        "step_1": "Select Hospital",
+        "step_2": "Department",
+        "step_3": "Doctor",
+        "step_4": "Confirm",
+        "btn_next": "Next Step",
+        "btn_back": "Back",
+        "now_serving": "Now Serving",
+        "your_status": "Your Live Status",
+        "position": "Position in Queue",
+        "wait_time": "Estimated Wait",
+        "mins": "mins",
+        "label_upload": "Upload Medical Output (X-Ray, Scan, etc.)",
+        "awaiting_input": "Awaiting input. Your health analysis will appear here.",
+        "doc_physician": "General Physician • 15 Yrs Exp",
+        "doc_womens": "Women's Health • 12 Yrs Exp",
+        "emergency_rescue": "Emergency Rescue",
+        "emergency_sub": "Book an ambulance instantly. Track its live location as it reaches you.",
+        "request_dispatch": "Request Dispatch",
+        "searching": "Searching...",
+        "patient_name": "Patient Name",
+        "contact_number": "Contact Number",
+        "emergency_type": "Emergency Type",
+        "pickup_location": "Pickup Location (Auto-detected)",
+        "type_cardiac": "❤️ Cardiac Arrest / Heart Attack",
+        "type_accident": "💥 Accident / Trauma",
+        "type_respiratory": "🫁 Severe Breathing Difficulty",
+        "type_maternity": "🤰 Maternity",
+        "type_other": "🟢 General Emergency",
+        "booking_confirmed": "Booking Confirmed",
+        "now_serving_title": "🟢 Now Serving",
+        "live_status_subtitle": "Real-time token status for AI Chitikshalaya",
+        "queue_timeline": "Queue Timeline",
+        "token_approaching": "Token Approaching:",
+        "est_wait": "Estimated Wait Time"
+    },
+    "hi": {
+        "nav_home": "होम",
+        "nav_assistant": "AI सहायक",
+        "nav_opd": "OPD बुकिंग",
+        "nav_ambulance": "एम्बुलेंस",
+        "nav_hospitals": "अस्पताल खोजें",
+        "nav_pharmacies": "मेडिकल स्टोर",
+        "nav_emergency": "आपातकालीन",
+        "hero_title": "AI स्वास्थ्य सेवा को सशक्त बनाना",
+        "hero_subtitle": "अत्याधुनिक चिकित्सा इंटेलिजेंस का अनुभव करें। लक्षणों का विश्लेषण करें, वास्तविक समय में स्वास्थ्य सलाह प्राप्त करें, और तुरंत शीर्ष विशेषज्ञों से जुड़ें।",
+        "btn_get_started": "शुरू करें →",
+        "feature_diagnostics_title": "रीअल-टाइम डायग्नोस्टिक्स",
+        "feature_diagnostics_desc": "हमारे न्यूरल इंजन में लक्षण डालें और सेकंडों में गहरा प्रारंभिक विश्लेषण प्राप्त करें।",
+        "feature_opd_title": "स्मार्ट OPD",
+        "feature_opd_desc": "भौतिक कतारों को छोड़ें। अपना परामर्श टोकन ऑनलाइन बुक करें और वास्तविक समय कतार अपडेट प्राप्त करें।",
+        "feature_radar_title": "त्वरित रडार",
+        "feature_radar_desc": "हमारे 50km अल्ट्रा-स्कैन अल्ट्रा-वाइड रडार के साथ निकटतम फार्मेसियों और अस्पतालों का पता लगाएं।",
+        "feature_emergency_title": "महत्वपूर्ण प्रतिक्रिया",
+        "feature_emergency_desc": "एक-टैप एम्बुलेंस प्रेषण के साथ आपातकालीन सेवाओं तक तत्काल पहुंच।",
+        "btn_book_token": "टोकन बुक करें →",
+        "btn_dispatch": "एम्बुलेंस भेजें (108)",
+        "symptom_analysis_title": "लक्षण विश्लेषण",
+        "symptom_analysis_desc": "सामान्य लक्षण चुनें या विस्तार से बताएं कि आप कैसा महसूस कर रहे हैं।",
+        "placeholder_symptoms": "अपने लक्षणों का विस्तार से वर्णन करें...",
+        "btn_analyze": "लक्षणों का विश्लेषण करें",
+        "specialists_title": "कॉल पर विशेषज्ञ",
+        "emergency_hotline": "आपातकालीन हॉटलाइन",
+        "emergency_desc": "यदि आप गंभीर दर्द, रक्तस्राव, या सांस लेने की समस्याओं का अनुभव कर रहे हैं, तो आपातकालीन सेवाओं से संपर्क करें।",
+        "btn_call_ambulance": "एम्बुलेंस बुलाएं (108)",
+        "opd_welcome": "OPD टोकन स्टेशन",
+        "opd_subtitle": "भीड़ से बचें। अपनी नियुक्ति बुक करें और अपनी कतार की स्थिति को लाइव ट्रैक करें।",
+        "step_1": "अस्पताल चुनें",
+        "step_2": "विभाग",
+        "step_3": "डॉक्टर",
+        "step_4": "पुष्टि करें",
+        "btn_next": "अगला कदम",
+        "btn_back": "पीछे",
+        "now_serving": "अभी सेवा दी जा रही है",
+        "your_status": "आपकी लाइव स्थिति",
+        "position": "कतार में स्थिति",
+        "wait_time": "अनुमानित प्रतीक्षा",
+        "mins": "मिनट",
+        "label_upload": "मेडिकल आउटपुट अपलोड करें (एक्स-रे, स्कैन, आदि)",
+        "awaiting_input": "इनपुट की प्रतीक्षा है। आपका स्वास्थ्य विश्लेषण यहां दिखाई देगा।",
+        "doc_physician": "सामान्य चिकित्सक • 15 वर्ष का अनुभव",
+        "doc_womens": "महिला स्वास्थ्य • 12 वर्ष का अनुभव",
+        "emergency_rescue": "आपातकालीन बचाव",
+        "emergency_sub": "तुरंत एम्बुलेंस बुक करें। लाइव लोकेशन ट्रैक करें।",
+        "request_dispatch": "प्रेषण का अनुरोध करें",
+        "searching": "खोज रहे हैं...",
+        "patient_name": "मरीज का नाम",
+        "contact_number": "संपर्क नंबर",
+        "emergency_type": "आपातकालीन प्रकार",
+        "pickup_location": "पिकअप स्थान (स्वतः पहचाना गया)",
+        "type_cardiac": "❤️ कार्डियक अरेस्ट / दिल का दौरा",
+        "type_accident": "💥 दुर्घटना / आघात",
+        "type_respiratory": "🫁 सांस लेने में गंभीर कठिनाई",
+        "type_maternity": "🤰 प्रसूति",
+        "type_other": "🟢 सामान्य आपातकाल",
+        "booking_confirmed": "बुकिंग की पुष्टि हो गई",
+        "now_serving_title": "🟢 अभी सेवा दी जा रही है",
+        "live_status_subtitle": "एआई चिकित्सालय के लिए वास्तविक समय टोकन स्थिति",
+        "queue_timeline": "कतार समयरेखा",
+        "token_approaching": "टोकन आ रहा है:",
+        "est_wait": "अनुमानित प्रतीक्षा समय"
+    },
+    "bn": {
+        "nav_home": "হোম",
+        "nav_assistant": "AI সহকারী",
+        "nav_opd": "OPD বুকিং",
+        "nav_ambulance": "অ্যাম্বুলেন্স",
+        "nav_hospitals": "হাসপাতাল খুঁজুন",
+        "nav_pharmacies": "মেডিক্যাল শপ",
+        "nav_emergency": "জরুরী",
+        "hero_title": "AI স্বাস্থ্যসেবা ক্ষমতায়ন",
+        "hero_subtitle": "অত্যাধুনিক চিকিৎসা বুদ্ধিমত্তার অভিজ্ঞতা নিন। লক্ষণগুলি বিশ্লেষণ করুন, রিয়েল-টাইম স্বাস্থ্য পরামর্শ পান এবং অবিলম্বে শীর্ষ বিশেষজ্ঞদের সাথে যোগাযোগ করুন।",
+        "btn_get_started": "শুরু করুন →",
+        "feature_diagnostics_title": "রিয়েল-টাইম ডায়াগনস্টিকস",
+        "feature_diagnostics_desc": "আমাদের নিউরাল ইঞ্জিনে লক্ষণগুলি ইনপুট করুন এবং সেকেন্ডের মধ্যে গভীর প্রাথমিক বিশ্লেষণ পান।",
+        "feature_opd_title": "স্মার্ট OPD",
+        "feature_opd_desc": "শারীরিক সারি এড়িয়ে যান। অনলাইনে আপনার পরামর্শ টোকেন বুক করুন এবং রিয়েল-টাইম সারি আপডেট পান।",
+        "feature_radar_title": "তাত্ক্ষণিক রাডার",
+        "feature_radar_desc": "আমাদের 50km আল্ট্রা-স্ক্যান আল্ট্রা-ওয়াইড রাডার দিয়ে নিকটতম ফার্মেসী এবং হাসপাতালগুলি খুঁজুন।",
+        "feature_emergency_title": "গুরুত্বপূর্ণ প্রতিক্রিয়া",
+        "feature_emergency_desc": "ওয়ান-ট্যাপ অ্যাম্বুলেন্স প্রেরণ সহ জরুরী পরিষেবাগুলিতে অবিলম্বে অ্যাক্সেস।",
+        "btn_book_token": "টোকেন বুক করুন →",
+        "btn_dispatch": "অ্যাম্বুলেন্স পাঠান (108)",
+        "symptom_analysis_title": "লক্ষণ বিশ্লেষণ",
+        "symptom_analysis_desc": "সাধারণ লক্ষণগুলি নির্বাচন করুন বা আপনি কীভাবে অনুভব করছেন তা বিস্তারিতভাবে বর্ণনা করুন।",
+        "placeholder_symptoms": "আপনার লক্ষণগুলি পুঙ্খানুপুঙ্খভাবে বর্ণনা করুন...",
+        "btn_analyze": "লক্ষণ বিশ্লেষণ করুন",
+        "specialists_title": "কল বিশেষজ্ঞ",
+        "emergency_hotline": "জরুরী হটলাইন",
+        "emergency_desc": "আপনি যদি গুরুতর ব্যথা, রক্তপাত বা শ্বাসকষ্টের সমস্যা অনুভব করেন তবে জরুরি পরিষেবার সাথে যোগাযোগ করুন।",
+        "btn_call_ambulance": "অ্যাম্বুলেন্স কল করুন (108)",
+        "opd_welcome": "OPD টোকেন স্টেশন",
+        "opd_subtitle": "ভিড় এড়িয়ে চলুন। আপনার অ্যাপয়েন্টমেন্ট বুক করুন এবং লাইভ আপনার সারি অবস্থান ট্র্যাক করুন।",
+        "step_1": "হাসপাতাল নির্বাচন করুন",
+        "step_2": "বিভাগ",
+        "step_3": "ডাক্তার",
+        "step_4": "নিশ্চিত করুন",
+        "btn_next": "পরবর্তী পদক্ষেপ",
+        "btn_back": "পিছনে",
+        "now_serving": "এখন পরিবেশন করা হচ্ছে",
+        "your_status": "আপনার লাইভ স্ট্যাটাস",
+        "position": "সারিতে অবস্থান",
+        "wait_time": "আনুমানিক অপেক্ষা",
+        "mins": "মিনিট",
+        "label_upload": "মেডিক্যাল আউটপুট আপলোড করুন (এক্স-রে, স্ক্যান ইত্যাদি)",
+        "awaiting_input": "ইনপুট প্রতীক্ষিত। আপনার স্বাস্থ্য বিশ্লেষণ এখানে প্রদর্শিত হবে।",
+        "doc_physician": "জেনারেল ফিজিশিয়ান • ১৫ বছরের অভিজ্ঞতা",
+        "doc_womens": "মহিলা স্বাস্থ্য • ১২ বছরের অভিজ্ঞতা",
+        "emergency_rescue": "জরুরী উদ্ধার",
+        "emergency_sub": "তাত্ক্ষণিকভাবে অ্যাম্বুলেন্স বুক করুন। লাইভ অবস্থান ট্র্যাক করুন।",
+        "request_dispatch": "প্রেরণের অনুরোধ করুন",
+        "searching": "অনুসন্ধান করা হচ্ছে...",
+        "patient_name": "রোগীর নাম",
+        "contact_number": "যোগাযোগ নম্বর",
+        "emergency_type": "জরুরী ধরন",
+        "pickup_location": "পিকআপ অবস্থান (স্বয়ংক্রিয়ভাবে সনাক্ত)",
+        "type_cardiac": "❤️ কার্ডিয়াক অ্যারেস্ট / হার্ট অ্যাটাক",
+        "type_accident": "💥 দুর্ঘটনা / ট্রমা",
+        "type_respiratory": "🫁 তীব্র শ্বাসকষ্ট",
+        "type_maternity": "🤰 মাতৃত্ব",
+        "type_other": "🟢 সাধারণ জরুরী",
+        "booking_confirmed": "বুকিং নিশ্চিত করা হয়েছে",
+        "now_serving_title": "🟢 এখন পরিবেশন করা হচ্ছে",
+        "live_status_subtitle": "এআই চিরিৎসালয়ের জন্য রিয়েল-টাইম টোকেন স্ট্যাটাস",
+        "queue_timeline": "সারির সময়রেখা",
+        "token_approaching": "টোকেন কাছাকাছি আসছে:",
+        "est_wait": "আনুমানিক অপেক্ষার সময়"
+    }
+};
+
+function setLanguage(lang) {
+    localStorage.setItem('selectedLang', lang);
+    applyTranslations(lang);
+    
+    // Update all language select dropdowns to match
+    document.querySelectorAll('.language-selector').forEach(select => {
+        select.value = lang;
+    });
+}
+
+function applyTranslations(lang) {
+    const dict = translations[lang] || translations['en'];
+    
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = dict[key];
+            } else {
+                el.innerText = dict[key];
+            }
+        }
+    });
+
+    // Special case for brand logo if it has a dynamic part
+    document.documentElement.lang = lang;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('selectedLang') || 'en';
+    applyTranslations(savedLang);
+    
+    // Auto-update any dropdowns on load
+    document.querySelectorAll('.language-selector').forEach(select => {
+        select.value = savedLang;
+    });
+});

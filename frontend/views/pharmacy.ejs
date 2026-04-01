@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacy Locator | Glowing Medical Map</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="/i18n.js"></script>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -117,21 +118,30 @@
             <span style="filter: drop-shadow(0 0 10px var(--primary-accent));">⚕️</span> AI Chitikshalaya
         </a>
         <nav class="nav-links">
-            <a href="/">Home</a>
-            <a href="/home">AI Assistant</a>
-            <a href="/opd">OPD Booking</a>
-            <a href="/ambulance">Ambulance</a>
-            <a href="/hospitals">Find Hospitals</a>
-            <a href="/pharmacies">Medical Shops</a>
-            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;">Emergency</a>
+            <a href="/" data-i18n="nav_home">Home</a>
+            <a href="/home" data-i18n="nav_assistant">AI Assistant</a>
+            <a href="/opd" data-i18n="nav_opd">OPD Booking</a>
+            <a href="/ambulance" data-i18n="nav_ambulance">Ambulance</a>
+            <a href="/hospitals" data-i18n="nav_hospitals">Find Hospitals</a>
+            <a href="/pharmacies" data-i18n="nav_pharmacies">Medical Shops</a>
+            <a href="/#emergency" style="color: #fca5a5; font-weight: 700;" data-i18n="nav_emergency">Emergency</a>
+            
+            <select class="language-selector glass-input" onchange="setLanguage(this.value)" 
+                style="margin-left: 15px; padding: 5px 10px; height: auto; width: auto; font-size: 0.9rem; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 8px;">
+                <option value="en">🇺🇸 EN</option>
+                <option value="hi">🇮🇳 HI</option>
+                <option value="bn">🇮🇳 BN</option>
+            </select>
         </nav>
     </header>
 
     <main class="main-wrapper">
         <div class="map-header animate-fade-up">
-            <h1 class="heading-gradient">Local Pharmacy Radar</h1>
-            <p style="color: var(--text-muted); max-width: 600px; margin: 10px auto;">
-                Satellite view of nearby medical shops. Glowing green anchors represent active retail pharmacies detected in your vicinity.
+            <h1 class="hero-title animate-fade-up">
+                <span class="heading-gradient" data-i18n="nav_pharmacies">Pharmacy Locator</span>
+            </h1>
+            <p class="hero-subtitle animate-fade-up" style="animation-delay: 0.1s;" data-i18n="feature_radar_desc">
+                Find the nearest pharmacies and hospitals with our 50km Ultra-Scan ultra-wide radar.
             </p>
             <div id="status" class="status-pill" style="display: none;">
                 <span class="glowing-marker" style="width: 8px; height: 8px; animation: none; box-shadow: none;"></span>
