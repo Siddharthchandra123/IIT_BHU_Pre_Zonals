@@ -63,7 +63,15 @@ const translations = {
         "live_status_subtitle": "Real-time token status for AI Chitikshalaya",
         "queue_timeline": "Queue Timeline",
         "token_approaching": "Token Approaching:",
-        "est_wait": "Estimated Wait Time"
+        "est_wait": "Estimated Wait Time",
+        "brand_name": "AI Chitikshalaya",
+        "label_upload": "Upload Medical Output (X-Ray, Scan, etc.)",
+        "awaiting_input": "Awaiting input. Your health analysis will appear here.",
+        "call_driver": "📞 Call Driver",
+        "patient_name": "Patient Name",
+        "contact_number": "Contact Number",
+        "emergency_type": "Emergency Type",
+        "pickup_location": "Pickup Location (Auto-detected)"
     },
     "hi": {
         "nav_home": "होम",
@@ -129,7 +137,9 @@ const translations = {
         "live_status_subtitle": "एआई चिकित्सालय के लिए वास्तविक समय टोकन स्थिति",
         "queue_timeline": "कतार समयरेखा",
         "token_approaching": "टोकन आ रहा है:",
-        "est_wait": "अनुमानित प्रतीक्षा समय"
+        "est_wait": "अनुमानित प्रतीक्षा समय",
+        "brand_name": "एआई चिकित्सालय",
+        "call_driver": "📞 ड्राइवर को बुलाएं"
     },
     "bn": {
         "nav_home": "হোম",
@@ -195,7 +205,15 @@ const translations = {
         "live_status_subtitle": "এআই চিরিৎসালয়ের জন্য রিয়েল-টাইম টোকেন স্ট্যাটাস",
         "queue_timeline": "সারির সময়রেখা",
         "token_approaching": "টোকেন কাছাকাছি আসছে:",
-        "est_wait": "আনুমানিক অপেক্ষার সময়"
+        "est_wait": "আনুমানিক অপেক্ষার সময়",
+        "brand_name": "এআই চিরিৎসালয়",
+        "label_upload": "মেডিক্যাল আউটপুট আপলোড করুন (এক্স-রে, স্ক্যান ইত্যাদি)",
+        "awaiting_input": "ইনপুট প্রতীক্ষিত। আপনার স্বাস্থ্য বিশ্লেষণ এখানে প্রদর্শিত হবে।",
+        "call_driver": "📞 ড্রাইভারকে কল করুন",
+        "patient_name": "রোগীর নাম",
+        "contact_number": "যোগাযোগ নম্বর",
+        "emergency_type": "জরুরী ধরন",
+        "pickup_location": "পিকআপ অবস্থান (স্বয়ংক্রিয়ভাবে সনাক্ত)"
     }
 };
 
