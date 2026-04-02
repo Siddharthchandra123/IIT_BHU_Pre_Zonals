@@ -103,7 +103,9 @@ const translations = {
         "err_scan_first": "Please scan first to establish location!",
         "err_fill_all": "Fill all fields!",
         "hospital_found_desc": "Nearby medical facilities found.",
-        "you_are_here": "You are here"
+        "you_are_here": "You are here",
+        "brand_mission_title": "Precision and Compassion",
+        "brand_mission_text": "Chikitsalya AI bridges the gap between advanced neural diagnostic intelligence and accessible healthcare. We are building the future where data-driven medical insights are available to every citizen, instantly."
     },
     "hi": {
         "nav_home": "होम",
@@ -209,7 +211,9 @@ const translations = {
         "err_scan_first": "स्थान स्थापित करने के लिए कृपया पहले स्कैन करें!",
         "err_fill_all": "सभी फ़ील्ड भरें!",
         "hospital_found_desc": "निकटतम चिकित्सा सुविधाएं मिलीं।",
-        "you_are_here": "आप यहाँ हैं"
+        "you_are_here": "आप यहाँ हैं",
+        "brand_mission_title": "सटीकता और करुणा",
+        "brand_mission_text": "एआई चिकित्सालय उन्नत न्यूरल डायग्नोस्टिक इंटेलिजेंस और सुलभ स्वास्थ्य सेवा के बीच की खाई को पाटता है। हम एक ऐसे भविष्य का निर्माण कर रहे हैं जहां डेटा-संचालित चिकित्सा अंतर्दृष्टि प्रत्येक नागरिक के लिए तुरंत उपलब्ध होगी।"
     },
     "bn": {
         "nav_home": "হোম",
@@ -315,7 +319,9 @@ const translations = {
         "err_scan_first": "অবস্থান নির্ধারণ করতে প্রথমে স্ক্যান করুন!",
         "err_fill_all": "সব ক্ষেত্র পূরণ করুন!",
         "hospital_found_desc": "নিকটবর্তী চিকিৎসা কেন্দ্র পাওয়া গেছে।",
-        "you_are_here": "আপনি এখানে আছেন"
+        "you_are_here": "আপনি এখানে আছেন",
+        "brand_mission_title": "নির্ভুলতা এবং সহানুভূতি",
+        "brand_mission_text": "এআই চিরিৎসালয় উন্নত নিউরাল ডায়াগনস্টিক ইন্টেলিজেন্স এবং অ্যাক্সেসযোগ্য স্বাস্থ্যসেবার মধ্যে ব্যবধান কমিয়ে দেয়। আমরা এমন একটি ভবিষ্যত তৈরি করছি যেখানে ডেটা-চালিত চিকিৎসা অন্তর্দৃষ্টি প্রতিটি নাগরিকের কাছে অবিলম্বে উপলব্ধ হবে।"
     }
 };
 

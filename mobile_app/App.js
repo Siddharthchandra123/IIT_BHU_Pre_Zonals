@@ -9,7 +9,8 @@ import {
   TouchableOpacity, 
   ScrollView, 
   FlatList,
-  Linking
+  Linking,
+  Image
 } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
@@ -151,7 +152,8 @@ export default function App() {
         
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>⚕️ Chikitsalya AI</Text>
+          <Image source={require('./assets/logo.png')} style={styles.logo} />
+          <Text style={styles.headerTitle}>Chikitsalya AI</Text>
           <Text style={styles.headerSubtitle}>Medical Decision Support Tool</Text>
         </View>
 
@@ -243,6 +245,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0B1120' },
   header: { padding: 25, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#1e293b' },
+  logo: { width: 60, height: 60, marginBottom: 12, borderRadius: 12 },
   headerTitle: { fontSize: 24, fontWeight: '800', color: '#0ea5e9' },
   headerSubtitle: { fontSize: 12, color: '#64748b', marginTop: 4 },
   
