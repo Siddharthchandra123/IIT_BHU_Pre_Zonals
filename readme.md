@@ -1,142 +1,88 @@
 # 🏥 Chikitsalya — AI-Powered Rural Telehealth & Clinical Decision Support
 
-## 🌍 Overview
-**Chikitsalya** is an AI-driven medical assistance platform designed to improve healthcare accessibility, early diagnosis, and clinical decision support in underserved and rural regions.
+![Chikitsalya Hero Banner](./local_host/public/images/hero.png)
 
-The system combines **symptom analysis, medical knowledge retrieval (RAG), risk prediction models, and hospital connectivity** to assist patients and healthcare providers in making timely and informed decisions.
+## 🌍 Overview
+**Chikitsalya** is a state-of-the-art AI-driven medical assistance platform engineered for rural accessibility, early diagnosis, and clinical decision support. It bridges the gap between underserved communities and quality healthcare through advanced machine learning and real-time medical knowledge retrieval.
 
 ---
 
-## 🎯 Problem Statement
-Healthcare access in rural and semi-urban areas faces several challenges:
+## 🎯 The Vision
+Healthcare in rural areas faces critical challenges:
+- ❌ **Doctor Shortage**: Thousands of patients per qualified physician.
+- ❌ **Delayed Diagnosis**: Simple conditions often progress due to lack of early screening.
+- ❌ **Cost Barriers**: High-end diagnostic tools are often unavailable or unaffordable.
 
-- ❌ Shortage of qualified doctors
-- ❌ Delayed diagnosis & treatment
-- ❌ Lack of medical awareness
-- ❌ Limited connectivity to nearby hospitals
-- ❌ Overburdened healthcare facilities
-
-**Chikitsalya aims to bridge this gap using AI-powered medical assistance.**
+**Chikitsalya provides a "Medical First Responder" in the palm of your hand.**
 
 ---
 
 ## 🚀 Key Features
 
-### 🤖 AI Symptom Analysis
-- Accepts patient symptoms via chat or form.
-- Uses a **Random Forest Classifier** trained on extensive disease-symptom datasets.
-- Provides a probability-based confidence score for each prediction.
+### 🤖 Intelligent Symptom Analysis
+Using a high-accuracy **Random Forest Classifier**, Chikitsalya predicts potential conditions based on patient-reported symptoms, providing a confidence score to aid triage.
 
-### 📚 Medical Knowledge RAG System
-- **Retrieval-Augmented Generation (RAG)**: Combines pre-trained models with a custom medical knowledge base.
-- **FAISS Vector Database**: Enables lightning-fast similarity searches across thousands of medical Q&A pairs (MedQuad dataset).
-- **Sentence Transformers**: Uses `all-MiniLM-L6-v2` to create high-dimensional semantic embeddings for precise matching.
-- **Reduced Hallucinations**: Direct evidence-based retrieval ensures answers are grounded in verified medical text.
+### 📚 Medical Knowledge RAG (Retrieval-Augmented Generation)
+![Chikitsalya Interface](./local_host/public/images/interface.png)
+- **Massive Database**: Indexed with over **16,000+ medical entries** (MedLine Plus MedQuad).
+- **FAISS Engine**: Lightning-fast vector search for evidence-based medical advice.
+- **Explainable Results**: Directly retrieves verified medical text to ground AI predictions in reality.
 
-### ⚠️ Risk Prediction & Severity
-- ML models assess symptom severity and urgency.
-- **High-Risk Detection**: Automatically flags critical symptoms (e.g., chest pain, difficulty breathing) for immediate emergency alerts.
+### ⚠️ Real-time Risk Assessment
+- ML models evaluate urgency and severity.
+- **Emergency Triggers**: Instant alerts for life-threatening symptoms (chest pain, breathing difficulty).
 
-### 🏥 Nearest Hospital Connectivity
-- Finds nearby hospitals & healthcare centers.
-- Enables quick referrals and location-based triage during emergencies.
+### 🏥 Hospital & Pharmacy Connectivity
+- Automatically finds the nearest healthcare facilities for immediate referral and action.
 
-### 🌐 Multilingual & Rural-Friendly Interface
-- **Google Translator Integration**: Real-time translation between English and regional languages.
-- Simple, accessible UI designed for ease of use in low-resource settings.
+![Architecture](./local_host/public/images/architecture.png)
 
 ---
 
-## 🧠 AI & ML Components
-
-### Models Used
-- **Random Forest Classifier** — Core disease prediction engine.
-- **Sentence Transformers (`all-MiniLM-L6-v2`)** — For semantic similarity in the RAG pipeline.
-- **FAISS (Facebook AI Similarity Search)** — Vector indexing and retrieval engine.
-
----
-
-## 🏗️ System Architecture
-
-### 🔹 Frontend (EJS/Node.js)
-- **Express Server**: Handles routing, UI rendering, and proxying requests to the AI service.
-- **EJS Templating**: dynamic page rendering for a seamless user experience.
-
-### 🔹 Backend (Python/Flask)
-- **Flask API**: Acts as the bridge between the frontend and the AI models.
-- **Inference Service**: Runs the ML models and FAISS search in real-time.
-
----
-
-## 🔄 Workflow
-1. **User Input**: Patient describes symptoms in their preferred language.
-2. **Translation**: If non-English, query is translated to English for processing.
-3. **Symptom Parsing**: NLP engine identifies key symptoms.
-4. **Vector Search (RAG)**: FAISS retrieves the most relevant medical guidance from the database.
-5. **ML Prediction**: Random Forest model calculates the most likely condition.
-6. **Output**: The system displays Possible Conditions, care advice, emergency alerts, and translates it back to the user's language.
-
----
-
-## 🧰 Technology Stack
+## 🏗️ Technical Architecture
 
 | Layer | Technology |
 |------|-----------|
-| **Frontend** | HTML5, CSS3 (Vanilla), JavaScript, EJS |
-| **Backend** | Node.js, Express |
-| **AI Services** | Python 3.x, Flask, Flask-CORS |
-| **ML Libraries** | scikit-learn, joblib |
-| **RAG Pipeline** | FAISS, Sentence Transformers, Transformers |
+| **UI Framework** | HTML5, CSS3 (Premium Glassmorphism), JavaScript, EJS |
+| **Logic Server** | Node.js, Express |
+| **AI Backend** | Python 3.x, Flask, scikit-learn |
+| **Knowledge Engine** | FAISS, Sentence-Transformers (`all-MiniLM-L6-v2`) |
 | **Translation** | deep-translator (Google Translator API) |
-| **Data Handling** | Pandas, NumPy |
+| **Data Engine** | Pandas, NumPy, joblib |
 
 ---
 
-## ⚙️ Installation & Setup (Local Development)
+## ⚙️ Quick Start
 
-### 1️⃣ Clone Repository
+### 1️⃣ Clone the Repo
 ```bash
 git clone https://github.com/Siddharthchandra123/IIT_BHU_Pre_Zonals.git
 cd IIT_BHU_Pre_Zonals
 ```
 
-### 2️⃣ Navigate to Project Folder
+### 2️⃣ Start AI Services (Python)
+Ensure Python 3.8+ is installed.
 ```bash
 cd local_host
-```
-
-### 3️⃣ AI Service Setup (Python)
-Ensure you have Python installed. It is recommended to use a virtual environment.
-```bash
-# Install dependencies
 pip install -r requirements.txt
-
-# Start the AI Backend
 python API.py
 ```
 
-### 4️⃣ Server Setup (Node.js)
-Open a new terminal window:
+### 3️⃣ Start Main Server (Node.js)
+In a separate terminal:
 ```bash
 cd local_host
-
-# Install dependencies
 npm install
-
-# Start the Frontend Server
 npm start
 ```
 
-### 5️⃣ Open in Browser
+### 4️⃣ Launch Platform
 Visit [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🛡️ Safety & Reliability
-
-- **Clinical Decision Support**: Designed as a tool for health workers and patients, not a final diagnostic authority.
-- **Emergency Protocols**: Hardcoded high-severity triggers for life-threatening symptoms.
-- **Verified Data**: Uses the MedQuad dataset for grounding knowledge.
+## 🛡️ Safety & Disclaimer
+Chikitsalya is a **Clinical Decision Support System (CDSS)**. It is designed to assist healthcare workers and patients in triage and screening. It **does not** replace professional medical diagnosis, and critical cases should always seek immediate attention from a human physician.
 
 ---
 
@@ -145,5 +91,5 @@ Visit [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## ⭐ Support
-If you find this project useful, please consider giving it a ⭐ on GitHub!
+## ⭐ Show Your Support
+Support rural healthcare by giving this project a ⭐ on GitHub!
