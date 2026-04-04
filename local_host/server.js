@@ -65,7 +65,7 @@ app.post('/ask', async (req, res) => {
     try {
         const userQuestion = req.body.question;
         const userLang = req.body.lang || "en";
-        
+
         console.log(`➡️ Proxying request to Python API: ${PYTHON_API_URL}/predict`);
 
         const response = await axios.post(`${PYTHON_API_URL}/predict`, {
@@ -98,15 +98,15 @@ app.use('/api/patient', patientRoutes);
 app.post('/api/add-pharmacy', (req, res) => {
     const newPharmacy = req.body;
     const feedPath = path.join(__dirname, 'pharmacy_data.json');
-    
+
     let feedData = [];
     if (fs.existsSync(feedPath)) {
         feedData = JSON.parse(fs.readFileSync(feedPath, 'utf8'));
     }
-    
+
     feedData.push(newPharmacy);
     fs.writeFileSync(feedPath, JSON.stringify(feedData, null, 2));
-    
+
     res.json({ success: true, message: "Pharmacy added to local feed!" });
 });
 
